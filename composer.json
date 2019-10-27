@@ -1,0 +1,54 @@
+{
+    "name": "sagitarius29/laravel-subscriptions",
+    "description": "A simple package for subscriptions",
+    "keywords": [
+        "sagitarius29",
+        "laravel-subscriptions"
+    ],
+    "homepage": "https://github.com/sagitarius29/laravel-subscriptions",
+    "license": "MIT",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Adolfo Cuadros",
+            "email": "ronnie.adolfo@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "illuminate/support": "5.8.*"
+    },
+    "require-dev": {
+        "orchestra/testbench": "3.8.*",
+        "phpunit/phpunit": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sagitarius29\\LaravelSubscriptions\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sagitarius29\\LaravelSubscriptions\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Sagitarius29\\LaravelSubscriptions\\LaravelSubscriptionsServiceProvider"
+            ],
+            "aliases": {
+                "LaravelSubscriptions": "Sagitarius29\\LaravelSubscriptions\\LaravelSubscriptionsFacade"
+            }
+        }
+    }
+}
