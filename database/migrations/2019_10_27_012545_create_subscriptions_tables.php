@@ -37,8 +37,6 @@ class CreateSubscriptionsTables extends Migration
             $table->enum('period', ['day',  'month',  'year'])->nullable();
             $table->integer('interval')->nullable();
 
-            $table->index('plan_id','fk_plans_periods_plans1_idx');
-
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
 
@@ -54,8 +52,6 @@ class CreateSubscriptionsTables extends Migration
             $table->string('name', 100)->nullable();
             $table->integer('value')->nullable();
             $table->boolean('consumible')->nullable();
-
-            $table->index('plan_id','fk_plans_features_plans1_idx');
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
@@ -75,8 +71,6 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('end_at')->nullable();
             $table->integer('cancelled_at')->nullable();
 
-            $table->index('plan_id','fk_subscriptions_plans1_idx');
-
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
 
@@ -93,8 +87,6 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('used')->nullable();
             $table->string('subscriber_type', 250)->nullable();
             $table->integer('subscriber_id')->nullable();
-
-            $table->index('plan_features_id','fk_plan_consumible_plans_features1_idx');
 
             $table->foreign('plan_features_id')
                 ->references('id')->on('plans_features');
