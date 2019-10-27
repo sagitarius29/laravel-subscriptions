@@ -1,6 +1,6 @@
 <?php
 
-namespace Sagitarius29\LaravelSubscriptions\Tests;
+namespace Sagitarius29\LaravelSubscriptions\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 
