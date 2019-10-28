@@ -18,7 +18,8 @@ class TestCase extends Testbench
     {
         parent::setUp();
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadLaravelMigrations(['--database' => 'testing']);
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        //$this->loadLaravelMigrations(['--database' => 'testing']);
     }
     /**
      * Define environment setup.
@@ -45,8 +46,7 @@ class TestCase extends Testbench
     protected function getPackageProviders($app)
     {
         return [
-            //'Cartalyst\Sentry\SentryServiceProvider',
-            //'YourProject\YourPackage\YourPackageServiceProvider',
+            LaravelSubscriptionsServiceProvider::class
         ];
     }
     /**

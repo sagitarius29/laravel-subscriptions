@@ -1,11 +1,11 @@
-# Very short description of the package
+# A simple laravel package for Subscriptions
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://packagist.org/packages/sagitarius29/laravel-subscriptions)
 [![Build Status](https://img.shields.io/travis/sagitarius29/laravel-subscriptions/master.svg?style=flat-square)](https://travis-ci.org/sagitarius29/laravel-subscriptions)
 [![Quality Score](https://img.shields.io/scrutinizer/g/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://scrutinizer-ci.com/g/sagitarius29/laravel-subscriptions)
 [![Total Downloads](https://img.shields.io/packagist/dt/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://packagist.org/packages/sagitarius29/laravel-subscriptions)
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+Welcome
 
 ## Installation
 
@@ -14,6 +14,16 @@ You can install the package via composer:
 ```bash
 composer require sagitarius29/laravel-subscriptions
 ```
+
+## Features
+This is the list of features:
+
+- Create plans and their features or consumables.
+- Manage your plans like get all plans, disable, delete
+- Assign a plan to your subscriber
+- Renew subscription plan
+- Your subscriber can change his plan to other, don't will lose his
+  plan until his plan expire.
 
 ## Usage
 

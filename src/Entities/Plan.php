@@ -3,10 +3,11 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanSinglePriceContract;
+use Sagitarius29\LaravelSubscriptions\Plan as PlanBase;
+use Sagitarius29\LaravelSubscriptions\Traits\HasSinglePrice;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Plan extends Model
+class Plan extends PlanBase
 {
-    protected $table = 'plans';
+    use HasSinglePrice;
 }

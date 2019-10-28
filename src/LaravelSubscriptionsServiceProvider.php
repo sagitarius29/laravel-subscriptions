@@ -3,6 +3,7 @@
 namespace Sagitarius29\LaravelSubscriptions;
 
 use Illuminate\Support\ServiceProvider;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 
 class LaravelSubscriptionsServiceProvider extends ServiceProvider
 {
@@ -50,7 +51,9 @@ class LaravelSubscriptionsServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        //$this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravel-subscriptions');
+        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'subscriptions');
+
+        $this->app->bind(PlanContract::class, config('subscriptions.entities.plan'));
 
         // Register the main class to use with the facade
         /*$this->app->singleton('laravel-subscriptions', function () {
