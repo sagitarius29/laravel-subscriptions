@@ -2,8 +2,8 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
-use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 
 class Group implements GroupContract
 {
