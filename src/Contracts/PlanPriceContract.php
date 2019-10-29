@@ -18,5 +18,6 @@ interface PlanPriceContract
 
     public static function make($interval, int $intervalUnit, float $amount): PlanPriceContract;
 
+    public static function makeWithoutInterval(float $amount): PlanPriceContract;
 
 }

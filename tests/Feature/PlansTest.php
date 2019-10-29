@@ -1,22 +1,20 @@
 <?php
 namespace Orchestra\Testbench\Tests\Databases;
-use Carbon\Carbon;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanPrice;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyPrices;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
-use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
-use Sagitarius29\LaravelSubscriptions\Traits\HasManyPrices;
-use Sagitarius29\LaravelSubscriptions\Traits\HasSinglePrice;
+use Sagitarius29\LaravelSubscriptions\{Entities\Plan,
+    Entities\PlanFeature,
+    Entities\PlanPrice,
+    Tests\Entities\PlanManyPrices,
+    Tests\Entities\User,
+    Tests\TestCase,
+    Traits\HasManyPrices,
+    Traits\HasSinglePrice};
 
 class PlansTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
-
-    protected $attributes;
 
     /** @test */
     public function it_can_create_a_plan()
@@ -120,6 +118,13 @@ class PlansTest extends TestCase
         $this->assertTrue($plan->isFree());
 
         $this->assertDatabaseMissing((new PlanPrice())->getTable(), $otherPrice->toArray());
+
+        //the price is zero
+        $zeroPrice = PlanPrice::make(PlanPrice::$DAY, 15, 0.00);
+
+        $plan->setPrice($zeroPrice);
+
+        $this->assertTrue($plan->isFree());
     }
 
     /** @test */

@@ -18,7 +18,7 @@ class TestCase extends Testbench
     {
         parent::setUp();
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
         //$this->loadLaravelMigrations(['--database' => 'testing']);
     }
     /**

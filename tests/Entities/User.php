@@ -3,9 +3,12 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Tests\Entities;
 use Illuminate\Foundation\Auth\User as Authenticable;
+use Sagitarius29\LaravelSubscriptions\Traits\HasSubscriptions;
 
 class User extends Authenticable
 {
+    use HasSubscriptions;
+
     /**
      * The attributes that are mass assignable.
      *

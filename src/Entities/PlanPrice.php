@@ -43,16 +43,11 @@ class PlanPrice extends Model implements PlanPriceContract
         return new self($attributes);
     }
 
-    protected static function checkPriceInterval(string $interval)
+    public static function makeWithoutInterval(float $amount): PlanPriceContract
     {
-        $intervals = [
-            self::$DAY, self::$MONTH, self::$YEAR
-        ];
-        if(!in_array($interval, $intervals)) {
-            throw new PriceErrorException(
-                'The interval \'' . $interval . '\' is not correct. Available intervals are: ' . implode(', ', $intervals)
-            );
-        }
+        return new self([
+            'amount'    => $amount
+        ]);
     }
 
     public function getInterval(): string
@@ -63,5 +58,17 @@ class PlanPrice extends Model implements PlanPriceContract
     public function getIntervalUnit(): int
     {
         return $this->interval_unit;
+    }
+
+    protected static function checkPriceInterval(string $interval)
+    {
+        $intervals = [
+            self::$DAY, self::$MONTH, self::$YEAR
+        ];
+        if(!in_array($interval, $intervals)) {
+            throw new PriceErrorException(
+                'The interval \'' . $interval . '\' is not correct. Available intervals are: ' . implode(', ', $intervals)
+            );
+        }
     }
 }

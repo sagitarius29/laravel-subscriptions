@@ -43,7 +43,7 @@ abstract class Plan extends Model implements PlanContract
 
     public function isFree(): bool
     {
-        return $this->prices()->count() == 0;
+        return $this->prices()->count() == 0 || $this->prices()->first()->amount == 0;
     }
 
     public static function create(
