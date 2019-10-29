@@ -1,14 +1,9 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Traits;
 
-
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
-use Sagitarius29\LaravelSubscriptions\Contracts\SubscribableContract;
-use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
-use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
+use Sagitarius29\LaravelSubscriptions\Contracts\{PlanContract, SubscriptionContact, SubscribableContract};
 
 trait HasSubscriptions
 {
@@ -23,11 +18,11 @@ trait HasSubscriptions
         $start_at = null;
         $end_at = null;
 
-        if($currentSubscription == null) {
+        if ($currentSubscription == null) {
             $start_at = now();
         }
 
-        if($plan->isFree()) {
+        if ($plan->isFree()) {
             $end_at = null;
         }
 
@@ -39,17 +34,14 @@ trait HasSubscriptions
 
     public function changePlanTo(PlanContract $plan)
     {
-
     }
 
     public function renewSubscription(): bool
     {
-
     }
 
     public function cancelSubscription(): bool
     {
-
     }
 
     public function getCurrentSubscription(): ?SubscriptionContact
@@ -61,6 +53,5 @@ trait HasSubscriptions
 
     public function getConsumables()
     {
-
     }
 }

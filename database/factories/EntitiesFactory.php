@@ -20,6 +20,6 @@ $factory->define(\Sagitarius29\LaravelSubscriptions\Entities\Plan::class, functi
         'free_days'     => $faker->randomNumber(2),
         'is_active'     => $faker->boolean,
         'is_default'    => 0,
-        'sort_order'    => $faker->randomNumber(2)
+        'sort_order'    => $faker->randomNumber(2),
     ];
 });

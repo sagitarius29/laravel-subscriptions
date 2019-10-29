@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Contracts;
-
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,11 +10,11 @@ interface PlanContract
 
     public function prices();
 
-    public function isDefault(): bool ;
+    public function isDefault(): bool;
 
-    public function isActive(): bool ;
+    public function isActive(): bool;
 
-    public function isFree(): bool ;
+    public function isFree(): bool;
 
     public function subscriptions();
 

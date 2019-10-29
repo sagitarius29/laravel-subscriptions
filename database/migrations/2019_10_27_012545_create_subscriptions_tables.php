@@ -13,7 +13,7 @@ class CreateSubscriptionsTables extends Migration
      */
     public function up()
     {
-        Schema::create('plans', function(Blueprint $table) {
+        Schema::create('plans', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
@@ -29,7 +29,7 @@ class CreateSubscriptionsTables extends Migration
 
         });
 
-        Schema::create('plan_prices', function(Blueprint $table) {
+        Schema::create('plan_prices', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
@@ -45,7 +45,7 @@ class CreateSubscriptionsTables extends Migration
 
         });
 
-        Schema::create('plan_features', function(Blueprint $table) {
+        Schema::create('plan_features', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
@@ -62,7 +62,7 @@ class CreateSubscriptionsTables extends Migration
 
         });
 
-        Schema::create('subscriptions', function(Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
@@ -82,7 +82,7 @@ class CreateSubscriptionsTables extends Migration
 
         });
 
-        Schema::create('subscriber_consumables', function(Blueprint $table) {
+        Schema::create('subscriber_consumables', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');

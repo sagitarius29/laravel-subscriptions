@@ -1,19 +1,17 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions;
 
-
 use Illuminate\Database\Eloquent\Model;
-use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 
 abstract class Plan extends Model implements PlanContract
 {
     protected $table = 'plans';
 
     protected $fillable = [
-        'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default'
+        'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default',
     ];
 
     public function features()
@@ -48,21 +46,21 @@ abstract class Plan extends Model implements PlanContract
 
     public static function create(
         string $name, string $description, int $free_days, int $sort_order, bool $is_active = false, bool $is_default = false
-    ): Model
-    {
+    ): Model {
         $attributes = [
             'name'          => $name,
             'description'   => $description,
             'free_days'     => $free_days,
             'sort_order'    => $sort_order,
             'is_active'     => $is_active,
-            'is_default'    => $is_default
+            'is_default'    => $is_default,
         ];
 
         $calledClass = get_called_class();
 
         $plan = new $calledClass($attributes);
         $plan->save();
+
         return $plan;
     }
 

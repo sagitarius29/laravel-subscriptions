@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Entities;
-
 
 use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
@@ -12,7 +10,7 @@ class PlanFeature extends Model implements PlanFeatureContract
     protected $table = 'plan_features';
 
     protected $fillable = [
-        'code', 'value', 'sort_order', 'is_consumable'
+        'code', 'value', 'sort_order', 'is_consumable',
     ];
 
     public function plan()

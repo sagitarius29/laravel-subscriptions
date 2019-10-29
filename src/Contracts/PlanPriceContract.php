@@ -1,10 +1,6 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Contracts;
-
-
-use Illuminate\Database\Eloquent\Model;
 
 interface PlanPriceContract
 {
@@ -16,8 +12,8 @@ interface PlanPriceContract
 
     public function getIntervalUnit(): int;
 
-    public static function make($interval, int $intervalUnit, float $amount): PlanPriceContract;
+    public static function make($interval, int $intervalUnit, float $amount): self;
 
-    public static function makeWithoutInterval(float $amount): PlanPriceContract;
+    public static function makeWithoutInterval(float $amount): self;
 
 }

@@ -1,9 +1,7 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanSinglePriceContract;
 use Sagitarius29\LaravelSubscriptions\Plan as PlanBase;
 use Sagitarius29\LaravelSubscriptions\Traits\HasSinglePrice;
 

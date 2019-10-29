@@ -5,13 +5,12 @@ namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
 
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
+use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
 
 class SubscriptionsTest extends TestCase
 {
@@ -38,7 +37,7 @@ class SubscriptionsTest extends TestCase
             'subscriber_type'   => User::class,
             'subscriber_id'     => $user->id,
             'start_at'          => $this->now,
-            'end_at'            => null
+            'end_at'            => null,
         ];
 
         $this->assertDatabaseHas((new Subscription())->getTable(), $dataSubscription);

@@ -1,12 +1,10 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
-
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
 
@@ -15,7 +13,7 @@ class Subscription extends Model implements SubscriptionContact
     protected $table = 'subscriptions';
 
     protected $fillable = [
-        'plan_id', 'start_at', 'end_at'
+        'plan_id', 'start_at', 'end_at',
     ];
 
     public function scopeCurrent(Builder $q, Carbon $date)
@@ -59,7 +57,7 @@ class Subscription extends Model implements SubscriptionContact
         return new Subscription([
             'plan_id'   => $plan->id,
             'start_at'  => $start_at,
-            'end_at'    => $end_at
+            'end_at'    => $end_at,
         ]);
     }
 }

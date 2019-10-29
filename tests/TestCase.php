@@ -1,10 +1,9 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Tests;
 
-use Faker\{Factory as FakerFactory, Generator as FakerGenerator};
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Faker\Factory as FakerFactory;
+use Faker\Generator as FakerGenerator;
 use Orchestra\Testbench\TestCase as Testbench;
 use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider;
@@ -17,8 +16,8 @@ class TestCase extends Testbench
     protected function setUp(): void
     {
         parent::setUp();
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadMigrationsFrom(__DIR__ . '/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/migrations');
         //$this->loadLaravelMigrations(['--database' => 'testing']);
     }
     /**
@@ -33,6 +32,7 @@ class TestCase extends Testbench
         $this->registerEloquentFactory($app);
         $app['config']->set('database.default', 'testing');
     }
+
     /**
      * Get package providers.  At a minimum this is the package being tested, but also
      * would include packages upon which our package depends, e.g. Cartalyst/Sentry
@@ -46,9 +46,10 @@ class TestCase extends Testbench
     protected function getPackageProviders($app)
     {
         return [
-            LaravelSubscriptionsServiceProvider::class
+            LaravelSubscriptionsServiceProvider::class,
         ];
     }
+
     /**
      * Get package aliases.  In a normal app environment these would be added to
      * the 'aliases' array in the config/app.php file.  If your package exposes an

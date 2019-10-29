@@ -3,8 +3,6 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Contracts;
 
-use Illuminate\Database\Eloquent\Collection;
-
 interface GroupContract
 {
     public function __construct($code = null);

@@ -1,16 +1,15 @@
 <?php
 namespace Orchestra\Testbench\Tests\Databases;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Sagitarius29\LaravelSubscriptions\{Entities\Plan,
-    Entities\PlanFeature,
-    Entities\PlanPrice,
-    Tests\Entities\PlanManyPrices,
-    Tests\Entities\User,
-    Tests\TestCase,
-    Traits\HasManyPrices,
-    Traits\HasSinglePrice};
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanPrice;
+use Sagitarius29\LaravelSubscriptions\Traits\HasManyPrices;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
+use Sagitarius29\LaravelSubscriptions\Traits\HasSinglePrice;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyPrices;
 
 class PlansTest extends TestCase
 {
@@ -20,10 +19,10 @@ class PlansTest extends TestCase
     public function it_can_create_a_plan()
     {
         $attributes = [
-            'name'      => 'Plan One',
+            'name'          => 'Plan One',
             'description'   => $this->faker->sentence,
-            'free_days' => 0,
-            'sort_order' => 1
+            'free_days'     => 0,
+            'sort_order'    => 1,
         ];
 
         // create a plan
@@ -95,7 +94,7 @@ class PlansTest extends TestCase
 
         $this->assertDatabaseHas((new PlanPrice())->getTable(), $firstPrice->toArray());
 
-        $this->assertTrue(!$plan->isFree());
+        $this->assertTrue(! $plan->isFree());
 
         // it's changing price
         $otherPrice = PlanPrice::make(PlanPrice::$DAY, 15, 50.00);
