@@ -54,7 +54,7 @@ class Subscription extends Model implements SubscriptionContact
 
     public static function make(PlanContract $plan, Carbon $start_at, Carbon $end_at = null): Model
     {
-        return new Subscription([
+        return new self([
             'plan_id'   => $plan->id,
             'start_at'  => $start_at,
             'end_at'    => $end_at,

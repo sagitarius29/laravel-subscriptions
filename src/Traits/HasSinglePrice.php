@@ -10,8 +10,9 @@ trait HasSinglePrice
     {
         $priceLoaded = $this->getPrice();
 
-        if($priceLoaded == null) {
+        if ($priceLoaded == null) {
             $this->prices()->save($price);
+
             return;
         }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
-
 
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -44,6 +42,5 @@ class SubscriptionsTest extends TestCase
 
         // the subscription is perpetual
         $this->assertTrue($subscription->isPerpetual());
-
     }
 }

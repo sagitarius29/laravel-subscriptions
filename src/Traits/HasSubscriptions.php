@@ -3,7 +3,9 @@
 namespace Sagitarius29\LaravelSubscriptions\Traits;
 
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
-use Sagitarius29\LaravelSubscriptions\Contracts\{PlanContract, SubscriptionContact, SubscribableContract};
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
+use Sagitarius29\LaravelSubscriptions\Contracts\SubscribableContract;
 
 trait HasSubscriptions
 {

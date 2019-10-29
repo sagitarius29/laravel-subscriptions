@@ -26,7 +26,6 @@ class CreateSubscriptionsTables extends Migration
             $table->boolean('is_default')->default(0);
 
             $table->timestamps();
-
         });
 
         Schema::create('plan_prices', function (Blueprint $table) {
@@ -42,7 +41,6 @@ class CreateSubscriptionsTables extends Migration
                 ->references('id')->on('plans');
 
             $table->timestamps();
-
         });
 
         Schema::create('plan_features', function (Blueprint $table) {
@@ -59,7 +57,6 @@ class CreateSubscriptionsTables extends Migration
                 ->references('id')->on('plans');
 
             $table->timestamps();
-
         });
 
         Schema::create('subscriptions', function (Blueprint $table) {
@@ -79,7 +76,6 @@ class CreateSubscriptionsTables extends Migration
                 ->references('id')->on('plans');
 
             $table->timestamps();
-
         });
 
         Schema::create('subscriber_consumables', function (Blueprint $table) {
@@ -96,7 +92,6 @@ class CreateSubscriptionsTables extends Migration
                 ->references('id')->on('plans_features');
 
             $table->timestamps();
-
         });
     }
 

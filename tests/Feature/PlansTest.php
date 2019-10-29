@@ -1,4 +1,5 @@
 <?php
+
 namespace Orchestra\Testbench\Tests\Databases;
 
 use Illuminate\Foundation\Testing\WithFaker;
@@ -6,8 +7,8 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanPrice;
-use Sagitarius29\LaravelSubscriptions\Traits\HasManyPrices;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
+use Sagitarius29\LaravelSubscriptions\Traits\HasManyPrices;
 use Sagitarius29\LaravelSubscriptions\Traits\HasSinglePrice;
 use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyPrices;
 

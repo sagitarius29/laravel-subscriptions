@@ -20,6 +20,7 @@ class TestCase extends Testbench
         $this->loadMigrationsFrom(__DIR__.'/migrations');
         //$this->loadLaravelMigrations(['--database' => 'testing']);
     }
+
     /**
      * Define environment setup.
      *
@@ -80,6 +81,7 @@ class TestCase extends Testbench
         });
         $app->singleton(EloquentFactory::class, function ($app) {
             $faker = $app->make(FakerGenerator::class);
+
             return EloquentFactory::construct($faker, __DIR__.'/../database/factories');
         });
     }

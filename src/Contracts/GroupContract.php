@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Contracts;
 
 interface GroupContract

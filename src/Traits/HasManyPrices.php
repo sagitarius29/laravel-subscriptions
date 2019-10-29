@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Sagitarius29\LaravelSubscriptions\Traits;
-
 
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanPriceContract;
 
