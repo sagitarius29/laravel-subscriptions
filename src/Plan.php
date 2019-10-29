@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 
-abstract class Plan extends Model implements PlanContract
+class Plan extends Model implements PlanContract
 {
     protected $table = 'plans';
 
@@ -19,9 +19,10 @@ abstract class Plan extends Model implements PlanContract
         return $this->hasMany(config('subscriptions.entities.plan_feature'));
     }
 
-    public function prices()
+    public function intervals()
     {
-        return $this->hasMany(config('subscriptions.entities.plan_price'), 'plan_id')->orderBy('amount');
+        return $this->hasMany(config('subscriptions.entities.plan_interval'), 'plan_id')
+            ->orderBy('price');
     }
 
     public function subscriptions()
@@ -41,11 +42,26 @@ abstract class Plan extends Model implements PlanContract
 
     public function isFree(): bool
     {
-        return $this->prices()->count() == 0 || $this->prices()->first()->amount == 0;
+        return $this->intervals()->count() == 0 || $this->intervals()->first()->price == 0;
+    }
+
+    public function isNotFree(): bool
+    {
+        return $this->intervals()->count() > 0 && $this->intervals()->first()->price > 0;
+    }
+
+    public function hasManyIntervals(): bool
+    {
+        return $this->intervals()->count() > 1;
     }
 
     public static function create(
-        string $name, string $description, int $free_days, int $sort_order, bool $is_active = false, bool $is_default = false
+        string $name,
+        string $description,
+        int $free_days,
+        int $sort_order,
+        bool $is_active = false,
+        bool $is_default = false
     ): Model {
         $attributes = [
             'name'          => $name,
@@ -66,7 +82,7 @@ abstract class Plan extends Model implements PlanContract
 
     public function setFree()
     {
-        $this->prices()->delete();
+        $this->intervals()->delete();
     }
 
     public function myGroup(): ?GroupContract

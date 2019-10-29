@@ -8,13 +8,17 @@ interface PlanContract
 {
     public function features();
 
-    public function prices();
+    public function intervals();
 
     public function isDefault(): bool;
 
     public function isActive(): bool;
 
     public function isFree(): bool;
+
+    public function isNotFree(): bool;
+
+    public function hasManyIntervals(): bool;
 
     public function subscriptions();
 
@@ -23,6 +27,11 @@ interface PlanContract
     public function toGroup(GroupContract $group): void;
 
     public static function create(
-        string $name, string $description, int $free_days, int $sort_order, bool $is_active = false, bool $is_default = false
+        string $name,
+        string $description,
+        int $free_days,
+        int $sort_order,
+        bool $is_active = false,
+        bool $is_default = false
     ): Model;
 }

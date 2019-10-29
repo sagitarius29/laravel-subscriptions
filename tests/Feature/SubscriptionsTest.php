@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanPrice;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
@@ -29,7 +29,7 @@ class SubscriptionsTest extends TestCase
 
         // when plan is free and the plan has't prices
         $this->assertTrue($plan->isFree());
-        $this->assertTrue($plan->prices()->count() == 0);
+        $this->assertTrue($plan->intervals()->count() === 0);
 
         $this->assertDatabaseHas((new Subscription())->getTable(), [
             'plan_id'           => $plan->id,
@@ -46,10 +46,37 @@ class SubscriptionsTest extends TestCase
         $otherUser = factory(User::class)->create();
         $otherPlan = factory(Plan::class)->create();
 
-        $otherPlan->setPrice(PlanPrice::makeWithoutInterval(300.00));
+        $otherPlan->setInterval(PlanInterval::makeInfinite(300.00));
 
         $subscription = $otherUser->subscribeTo($plan);
 
         $this->assertTrue($subscription->isPerpetual());
+    }
+
+    /** @test */
+    public function user_can_subscribe_to_plan_with_interval()
+    {
+        Carbon::setTestNow(Carbon::createFromFormat('Y-m-d H:i:s', $this->now));
+
+        $user = factory(User::class)->create();
+        $plan = factory(Plan::class)->create();
+
+        //when plan has price
+        $interval = PlanInterval::make(PlanInterval::$MONTH, 1, 4.90);
+        $plan->setInterval($interval);
+
+        $this->assertTrue($plan->isNotFree());
+
+        $this->assertNotTrue($plan->hasManyIntervals());
+
+        $user->subscribeTo($plan);
+
+        $this->assertDatabaseHas((new Subscription())->getTable(), [
+            'plan_id'           => $plan->id,
+            'subscriber_type'   => User::class,
+            'subscriber_id'     => $user->id,
+            'start_at'          => now()->toDateTimeString(),
+            'end_at'            => now()->addMonth($interval->getUnit())->toDateTimeString(),
+        ]);
     }
 }
