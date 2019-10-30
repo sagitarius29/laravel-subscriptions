@@ -15,7 +15,7 @@ class PlanFeature extends Model implements PlanFeatureContract
 
     public function plan()
     {
-        return $this->belongsTo(config('subscription.entities.plan'));
+        return $this->belongsTo(config('subscriptions.entities.plan'));
     }
 
     public function isConsumable(): bool
@@ -23,20 +23,45 @@ class PlanFeature extends Model implements PlanFeatureContract
         return $this->is_consumable;
     }
 
-    public function getValue(): int
+    public function getValue()
     {
         return $this->value;
     }
 
-    public static function make(string $code, int $value, int $sortOrder, bool $isConsumable = false): Model
-    {
+    /**
+     * @param  string  $code
+     * @param  bool|int  $value
+     * @param  int  $sortOrder
+     * @param  bool  $isConsumable
+     * @return Model
+     */
+    public static function make(
+        string $code,
+        $value,
+        int $sortOrder,
+        bool $isConsumable = null
+    ): Model {
         $attributes = [
             'code'          => $code,
             'value'         => $value,
             'sort_order'    => $sortOrder,
-            'is_consumable' => $isConsumable,
         ];
 
+        if (is_bool($value)) {
+            $attributes['is_consumable'] = false;
+        } else {
+            $attributes['is_consumable'] = true;
+        }
+
+        if ($isConsumable != null) {
+            $attributes['is_consumable'] = $isConsumable;
+        }
+
         return new self($attributes);
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
     }
 }

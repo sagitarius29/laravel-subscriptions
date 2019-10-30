@@ -16,7 +16,6 @@ $factory->define(\Sagitarius29\LaravelSubscriptions\Entities\Plan::class, functi
     return [
         'name'          => $faker->word,
         'description'   => $faker->sentence,
-        'group'         => $faker->randomElement(['group_a', 'group_b']),
         'free_days'     => $faker->randomNumber(2),
         'is_active'     => $faker->boolean,
         'is_default'    => 0,

@@ -3,30 +3,48 @@
 namespace Sagitarius29\LaravelSubscriptions;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
 
 abstract class Plan extends Model implements PlanContract
 {
     protected $table = 'plans';
 
     protected $fillable = [
-        'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default',
+        'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default', 'group',
     ];
+
+    public function scopeByGroup(Builder $q, GroupContract $group = null)
+    {
+        return $q->where('group', $group);
+    }
+
+    public function scopeIsDefault(Builder $q)
+    {
+        return $q->where('is_default', 1);
+    }
 
     public function features()
     {
         return $this->hasMany(config('subscriptions.entities.plan_feature'));
     }
 
-    public function prices()
+    public function intervals()
     {
-        return $this->hasMany(config('subscriptions.entities.plan_price'), 'plan_id')->orderBy('amount');
+        return $this->hasMany(config('subscriptions.entities.plan_interval'), 'plan_id')
+            ->orderBy('price');
     }
 
     public function subscriptions()
     {
-        return $this->hasMany(config('subscriptions.entities.subscription'));
+        return $this->hasMany(config('subscriptions.entities.plan_subscription'));
+    }
+
+    public function addFeature(PlanFeatureContract $feature)
+    {
+        $this->features()->save($feature);
     }
 
     public function isDefault(): bool
@@ -41,11 +59,27 @@ abstract class Plan extends Model implements PlanContract
 
     public function isFree(): bool
     {
-        return $this->prices()->count() == 0 || $this->prices()->first()->amount == 0;
+        return $this->intervals()->count() == 0 || $this->intervals()->first()->price == 0;
+    }
+
+    public function isNotFree(): bool
+    {
+        return $this->intervals()->count() > 0 && $this->intervals()->first()->price > 0;
+    }
+
+    public function hasManyIntervals(): bool
+    {
+        return $this->intervals()->count() > 1;
     }
 
     public static function create(
-        string $name, string $description, int $free_days, int $sort_order, bool $is_active = false, bool $is_default = false
+        string $name,
+        string $description,
+        int $free_days,
+        int $sort_order,
+        bool $is_active = false,
+        bool $is_default = false,
+        GroupContract $group = null
     ): Model {
         $attributes = [
             'name'          => $name,
@@ -54,9 +88,13 @@ abstract class Plan extends Model implements PlanContract
             'sort_order'    => $sort_order,
             'is_active'     => $is_active,
             'is_default'    => $is_default,
+            'group'         => $group,
         ];
-
         $calledClass = get_called_class();
+
+        if (! self::defaultExists($group)) {
+            $attributes['is_default'] = true;
+        }
 
         $plan = new $calledClass($attributes);
         $plan->save();
@@ -66,16 +104,51 @@ abstract class Plan extends Model implements PlanContract
 
     public function setFree()
     {
-        $this->prices()->delete();
+        $this->intervals()->delete();
+    }
+
+    public function setDefault()
+    {
+        $myGroup = $this->myGroup();
+        $calledClass = get_called_class();
+
+        $currentDefaults = $calledClass::query()
+            ->byGroup($myGroup)
+            ->isDefault()
+            ->get();
+
+        $currentDefaults->each(function ($plan) {
+            $plan->is_default = false;
+            $plan->save();
+        });
+
+        $this->is_default = true;
+        $this->save();
     }
 
     public function myGroup(): ?GroupContract
     {
-        return empty($this->group) ? null : new $this->group;
+        return empty($this->group) ? null : new \Sagitarius29\LaravelSubscriptions\Entities\Group($this->group);
     }
 
-    public function toGroup(GroupContract $group): void
+    public function changeToGroup(GroupContract $group): void
     {
-        // TODO: Implement toGroup() method.
+        $this->group = $group;
+
+        if (! self::defaultExists($group)) {
+            $this->is_default = true;
+        }
+
+        $this->save();
+    }
+
+    private static function defaultExists(GroupContract $group = null): bool
+    {
+        $calledClass = get_called_class();
+
+        return $calledClass::query()
+            ->byGroup($group)
+            ->isDefault()
+            ->exists();
     }
 }

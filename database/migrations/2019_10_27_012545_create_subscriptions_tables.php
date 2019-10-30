@@ -28,14 +28,14 @@ class CreateSubscriptionsTables extends Migration
             $table->timestamps();
         });
 
-        Schema::create('plan_prices', function (Blueprint $table) {
+        Schema::create('plan_intervals', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
             $table->integer('plan_id')->unsigned();
-            $table->decimal('amount');
+            $table->decimal('price');
             $table->enum('interval', ['day',  'month',  'year'])->nullable();
-            $table->integer('interval_unit');
+            $table->integer('interval_unit')->nullable();
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
