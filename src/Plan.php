@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
 
 abstract class Plan extends Model implements PlanContract
 {
@@ -39,6 +40,11 @@ abstract class Plan extends Model implements PlanContract
     public function subscriptions()
     {
         return $this->hasMany(config('subscriptions.entities.plan_subscription'));
+    }
+
+    public function addFeature(PlanFeatureContract $feature)
+    {
+        $this->features()->save($feature);
     }
 
     public function isDefault(): bool

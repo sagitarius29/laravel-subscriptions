@@ -10,7 +10,21 @@ interface PlanFeatureContract
 
     public function isConsumable(): bool;
 
-    public function getValue(): int;
+    public function getCode(): string;
 
-    public static function make(string $code, int $value, int $sortOrder, bool $isConsumable = false): Model;
+    public function getValue();
+
+    /**
+     * @param  string  $code
+     * @param int|bool $value
+     * @param  int  $sortOrder
+     * @param  bool  $isConsumable
+     * @return Model
+     */
+    public static function make(
+        string $code,
+        $value,
+        int $sortOrder,
+        bool $isConsumable = null
+    ): Model;
 }

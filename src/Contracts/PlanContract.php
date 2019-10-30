@@ -8,6 +8,8 @@ interface PlanContract
 {
     public function features();
 
+    public function addFeature(PlanFeatureContract $feature);
+
     public function intervals();
 
     public function isDefault(): bool;
