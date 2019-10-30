@@ -2,32 +2,56 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 
 class Group implements GroupContract
 {
-    public function __construct($code = null)
+    protected $code = null;
+    protected $modelPlan;
+
+    public function __construct(string $code)
     {
+        $this->code = $code;
+        $this->modelPlan = config('subscriptions.entities.plan');
     }
 
     public function getCode(): string
     {
-        // TODO: Implement getCode() method.
+        return $this->code;
     }
 
-    public function plans()
+    public function plans(): Builder
     {
-        // TODO: Implement plans() method.
+        return $this->modelPlan::query()->byGroup($this);
     }
 
     public function addPlan(PlanContract $plan): void
     {
-        // TODO: Implement addPlan() method.
+        $plan->changeToGroup($this);
     }
 
-    public function getDefaultPlan(): PlanContract
+    public function addPlans(array $plans): void
     {
-        // TODO: Implement getDefaultPlan() method.
+        foreach ($plans as $plan) {
+            $this->addPlan($plan);
+        }
+    }
+
+    public function hasPlans(): bool
+    {
+        return $this->plans()->count() > 0;
+    }
+
+    public function getDefaultPlan(): ?PlanContract
+    {
+        return $this->plans()->isDefault()->first();
+    }
+
+    public function __toString(): string
+    {
+        return $this->getCode();
     }
 }

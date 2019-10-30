@@ -36,6 +36,11 @@ class PlansTest extends TestCase
 
         $this->assertDatabaseHas((new Plan)->getTable(), $attributes);
 
+        $this->assertTrue($plan->features()->count() == 0);
+        $this->assertTrue($plan->intervals()->count() == 0);
+        $this->assertNotTrue($plan->hasManyIntervals());
+        $this->assertTrue($plan->subscriptions()->count() == 0);
+
         // it's for default any plans are inactive
         $this->assertFalse($plan->isActive());
 
@@ -43,7 +48,7 @@ class PlansTest extends TestCase
         $this->assertTrue($plan->isFree());
 
         // it's default because it's only one
-        $this->assertFalse($plan->isDefault());
+        $this->assertTrue($plan->isDefault());
 
         // it's group is null
         $this->assertNull($plan->myGroup());
@@ -72,10 +77,12 @@ class PlansTest extends TestCase
         foreach ($features as $feature) {
             $this->assertDatabaseHas((new PlanFeature())->getTable(), $feature->toArray());
         }
+
+        $this->assertTrue($plan->features()->count() == 4);
     }
 
     /** @test */
-    public function it_can_set_and_change_single_interval_of_a_plan()
+    public function it_can_set_and_change_interval_of_a_plan()
     {
         $plan = Plan::create(
             'name of plan',
@@ -87,6 +94,7 @@ class PlansTest extends TestCase
         // it's object has single interval trait
         $this->assertTrue(in_array(HasSingleInterval::class, class_uses($plan)));
 
+        // Interval is not free
         $firstInterval = PlanInterval::make(PlanInterval::$MONTH, 1, 10.50);
 
         $plan->setInterval($firstInterval);
@@ -103,14 +111,11 @@ class PlansTest extends TestCase
         $plan->setInterval($otherInterval);
 
         $this->assertDatabaseMissing((new PlanInterval())->getTable(), $firstInterval->toArray());
-
         $this->assertDatabaseHas((new PlanInterval())->getTable(), $otherInterval->toArray());
 
-        $this->assertEquals(50.00, $plan->getInterval()->getPrice());
-
         $this->assertEquals(PlanInterval::$DAY, $plan->getInterval()->getType());
-
         $this->assertEquals(15, $plan->getInterval()->getUnit());
+        $this->assertEquals(50.00, $plan->getInterval()->getPrice());
 
         // it's changing to free
         $plan->setFree();
@@ -125,10 +130,11 @@ class PlansTest extends TestCase
         $plan->setInterval($intervalWithoutPrice);
 
         $this->assertTrue($plan->isFree());
+        $this->assertEquals(0.00, $plan->getInterval()->getPrice());
     }
 
     /** @test */
-    public function a_plan_may_have_many_prices()
+    public function a_plan_may_has_many_intervals()
     {
         $intervalsTable = (new PlanInterval())->getTable();
 
@@ -142,7 +148,9 @@ class PlansTest extends TestCase
             1
         );
 
-        // it's object has trait of many prices
+        $this->assertTrue(Plan::query()->isDefault()->count() == 1);
+
+        // this is object has trait of many intervals
         $this->assertTrue(in_array(HasManyIntervals::class, class_uses($plan)));
 
         $intervals = [
@@ -158,8 +166,10 @@ class PlansTest extends TestCase
         }
 
         $this->assertTrue(count($plan->intervals) == 3);
+        $this->assertTrue($plan->hasManyIntervals());
+        $this->assertTrue($plan->isDefault());
 
-        // second option: add prices
+        // second option: addInterval()
         $otherPlan = PlanManyIntervals::create(
             'other name of plan',
             'this is a description',
@@ -175,5 +185,9 @@ class PlansTest extends TestCase
 
         $this->assertDatabaseHas($intervalsTable, $firstInterval->toArray());
         $this->assertDatabaseHas($intervalsTable, $secondInterval->toArray());
+
+        $this->assertTrue($otherPlan->isNotFree());
+        $this->assertTrue($otherPlan->hasManyIntervals());
+        $this->assertNotTrue($otherPlan->isDefault());
     }
 }

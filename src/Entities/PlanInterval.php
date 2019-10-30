@@ -5,7 +5,7 @@ namespace Sagitarius29\LaravelSubscriptions\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanPriceContract;
-use Sagitarius29\LaravelSubscriptions\Exceptions\PriceErrorException;
+use Sagitarius29\LaravelSubscriptions\Exceptions\IntervalErrorException;
 
 class PlanInterval extends Model implements PlanIntervalContract
 {
@@ -21,7 +21,7 @@ class PlanInterval extends Model implements PlanIntervalContract
 
     public function plan()
     {
-        return $this->belongsTo(config('config.entities.plan'));
+        return $this->belongsTo(config('subscriptions.entities.plan'));
     }
 
     public function getPrice(): int
@@ -70,7 +70,7 @@ class PlanInterval extends Model implements PlanIntervalContract
             self::$DAY, self::$MONTH, self::$YEAR
         ];
         if (! in_array($interval, $intervals)) {
-            throw new PriceErrorException(
+            throw new IntervalErrorException(
                 '\''.$interval.'\' is not correct. Available intervals are: '.implode(', ', $intervals)
             );
         }

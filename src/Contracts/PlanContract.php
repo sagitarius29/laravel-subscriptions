@@ -22,9 +22,11 @@ interface PlanContract
 
     public function subscriptions();
 
+    public function setDefault();
+
     public function myGroup(): ?GroupContract;
 
-    public function toGroup(GroupContract $group): void;
+    public function changeToGroup(GroupContract $group): void;
 
     public static function create(
         string $name,
@@ -32,6 +34,7 @@ interface PlanContract
         int $free_days,
         int $sort_order,
         bool $is_active = false,
-        bool $is_default = false
+        bool $is_default = false,
+        GroupContract $group = null
     ): Model;
 }
