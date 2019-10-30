@@ -3,7 +3,6 @@
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
 use Illuminate\Database\Eloquent\Model;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanPriceContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 use Sagitarius29\LaravelSubscriptions\Exceptions\IntervalErrorException;
 
@@ -67,7 +66,7 @@ class PlanInterval extends Model implements PlanIntervalContract
     protected static function checkIfIntervalExists(string $interval)
     {
         $intervals = [
-            self::$DAY, self::$MONTH, self::$YEAR
+            self::$DAY, self::$MONTH, self::$YEAR,
         ];
         if (! in_array($interval, $intervals)) {
             throw new IntervalErrorException(

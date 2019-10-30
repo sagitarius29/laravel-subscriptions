@@ -13,15 +13,13 @@ class PlanIntervalTest extends TestCase
     public function it_can_create_interval_for_plans()
     {
         //Error Interval
-
         $this->expectException(IntervalErrorException::class);
 
         PlanInterval::make(
-            'faa',
+            'foo',
             30,
             4.99
         );
-
 
         // Make Interval
         $interval = PlanInterval::make(

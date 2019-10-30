@@ -44,7 +44,7 @@ class PlanFeature extends Model implements PlanFeatureContract
         $attributes = [
             'code'          => $code,
             'value'         => $value,
-            'sort_order'    => $sortOrder
+            'sort_order'    => $sortOrder,
         ];
 
         if (is_bool($value)) {

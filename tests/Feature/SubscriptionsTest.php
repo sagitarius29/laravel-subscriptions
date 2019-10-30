@@ -6,12 +6,11 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
-use Sagitarius29\LaravelSubscriptions\Traits\HasManyIntervals;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
 
 class SubscriptionsTest extends TestCase
 {
@@ -111,7 +110,6 @@ class SubscriptionsTest extends TestCase
         $plan->setIntervals($intervals);
 
         // it's Subscribing
-
         $user->subscribeTo($intervals[1]); // 3 months for 4.90
 
         $this->assertDatabaseHas((new Subscription())->getTable(), [
@@ -143,6 +141,5 @@ class SubscriptionsTest extends TestCase
 
     public function user_can_cancel_his_subscription()
     {
-
     }
 }

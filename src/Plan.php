@@ -2,8 +2,8 @@
 
 namespace Sagitarius29\LaravelSubscriptions;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
@@ -117,7 +117,7 @@ abstract class Plan extends Model implements PlanContract
             ->isDefault()
             ->get();
 
-        $currentDefaults->each(function($plan) {
+        $currentDefaults->each(function ($plan) {
             $plan->is_default = false;
             $plan->save();
         });

@@ -17,7 +17,6 @@ trait HasSubscriptions
         return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
     }
 
-
     /**
      * @param PlanContract|PlanIntervalContract $planOrInterval
      * @return \Illuminate\Database\Eloquent\Model

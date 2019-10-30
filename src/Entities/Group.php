@@ -3,7 +3,6 @@
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 

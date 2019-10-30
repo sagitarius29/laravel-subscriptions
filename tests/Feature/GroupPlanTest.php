@@ -2,11 +2,10 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
-use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Sagitarius29\LaravelSubscriptions\Entities\Group;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Sagitarius29\LaravelSubscriptions\Entities\Group;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 
 class GroupPlanTest extends TestCase

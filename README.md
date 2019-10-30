@@ -1,6 +1,7 @@
 # A simple laravel package for Subscriptions
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://packagist.org/packages/sagitarius29/laravel-subscriptions)
+[![StyleCI](https://github.styleci.io/repos/217646946/shield)](https://github.styleci.io/repos/217646946)
 [![Build Status](https://img.shields.io/travis/sagitarius29/laravel-subscriptions/master.svg?style=flat-square)](https://travis-ci.org/sagitarius29/laravel-subscriptions)
 [![Quality Score](https://img.shields.io/scrutinizer/g/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://scrutinizer-ci.com/g/sagitarius29/laravel-subscriptions)
 [![Total Downloads](https://img.shields.io/packagist/dt/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://packagist.org/packages/sagitarius29/laravel-subscriptions)
