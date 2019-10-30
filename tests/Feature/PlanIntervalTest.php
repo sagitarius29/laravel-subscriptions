@@ -3,14 +3,26 @@
 namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
+use Sagitarius29\LaravelSubscriptions\Exceptions\IntervalErrorException;
 
 class PlanIntervalTest extends TestCase
 {
     /** @test */
     public function it_can_create_interval_for_plans()
     {
+        //Error Interval
+
+        $this->expectException(IntervalErrorException::class);
+
+        PlanInterval::make(
+            'faa',
+            30,
+            4.99
+        );
+
+
         // Make Interval
         $interval = PlanInterval::make(
             PlanInterval::$DAY,

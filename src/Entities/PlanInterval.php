@@ -3,8 +3,8 @@
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
 use Illuminate\Database\Eloquent\Model;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanPriceContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 use Sagitarius29\LaravelSubscriptions\Exceptions\IntervalErrorException;
 
 class PlanInterval extends Model implements PlanIntervalContract
