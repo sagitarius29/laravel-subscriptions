@@ -93,7 +93,7 @@ abstract class Plan extends Model implements PlanContract
         $calledClass = get_called_class();
 
         if (! self::defaultExists($group)) {
-           $attributes['is_default'] = true;
+            $attributes['is_default'] = true;
         }
 
         $plan = new $calledClass($attributes);

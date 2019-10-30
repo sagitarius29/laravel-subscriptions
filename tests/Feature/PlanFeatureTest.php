@@ -4,8 +4,8 @@ namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 
 class PlanFeatureTest extends TestCase
 {
@@ -21,7 +21,7 @@ class PlanFeatureTest extends TestCase
         );
 
         $secondFeature = PlanFeature::make(
-            'foo',
+            'bar',
             5, // is consumable
             2
         );
@@ -30,6 +30,7 @@ class PlanFeatureTest extends TestCase
         $plan->addFeature($firstFeature);
         $plan->addFeature($secondFeature);
 
+        $this->assertEquals('foo', $firstFeature->getCode());
         $this->assertEquals($plan->id, $firstFeature->plan->id);
         $this->assertTrue($firstFeature->getValue());
         $this->assertNotTrue($firstFeature->isConsumable());

@@ -24,7 +24,7 @@ class PlanInterval extends Model implements PlanIntervalContract
         return $this->belongsTo(config('subscriptions.entities.plan'));
     }
 
-    public function getPrice(): int
+    public function getPrice(): float
     {
         return $this->price;
     }
@@ -74,5 +74,15 @@ class PlanInterval extends Model implements PlanIntervalContract
                 '\''.$interval.'\' is not correct. Available intervals are: '.implode(', ', $intervals)
             );
         }
+    }
+
+    public function isFree(): bool
+    {
+        return $this->getPrice() == 0;
+    }
+
+    public function isNotFree(): bool
+    {
+        return $this->getPrice() != 0;
     }
 }
