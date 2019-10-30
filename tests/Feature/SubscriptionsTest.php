@@ -79,9 +79,6 @@ class SubscriptionsTest extends TestCase
             'start_at'          => now()->toDateTimeString(),
             'end_at'            => now()->addMonth($interval->getUnit())->toDateTimeString(),
         ]);
-
-        // when plan has various intervals
-
     }
 
     /** @test */
