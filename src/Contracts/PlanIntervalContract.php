@@ -4,6 +4,10 @@ namespace Sagitarius29\LaravelSubscriptions\Contracts;
 
 interface PlanIntervalContract
 {
+    public static function make($type, int $unit, float $price): self;
+
+    public static function makeInfinite(float $price): self;
+
     public function plan();
 
     public function getPrice(): float;
@@ -17,8 +21,4 @@ interface PlanIntervalContract
     public function isFree(): bool;
 
     public function isNotFree(): bool;
-
-    public static function make($type, int $unit, float $price): self;
-
-    public static function makeInfinite(float $price): self;
 }

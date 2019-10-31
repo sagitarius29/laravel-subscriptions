@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 interface SubscriptionContact
 {
+    public static function make(PlanContract $plan, Carbon $start_at, Carbon $end_at = null): Model;
+
     public function scopeCurrent(Builder $q);
 
     public function isPerpetual(): bool;
@@ -23,6 +25,4 @@ interface SubscriptionContact
     public function plan();
 
     public function subscriber();
-
-    public static function make(PlanContract $plan, Carbon $start_at, Carbon $end_at = null): Model;
 }

@@ -16,6 +16,46 @@ abstract class Plan extends Model implements PlanContract
         'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default', 'group',
     ];
 
+    public static function create(
+        string $name,
+        string $description,
+        int $free_days,
+        int $sort_order,
+        bool $is_active = false,
+        bool $is_default = false,
+        GroupContract $group = null
+    ): Model {
+        $attributes = [
+            'name' => $name,
+            'description' => $description,
+            'free_days' => $free_days,
+            'sort_order' => $sort_order,
+            'is_active' => $is_active,
+            'is_default' => $is_default,
+            'group' => $group,
+        ];
+        $calledClass = get_called_class();
+
+        if (! self::defaultExists($group)) {
+            $attributes['is_default'] = true;
+        }
+
+        $plan = new $calledClass($attributes);
+        $plan->save();
+
+        return $plan;
+    }
+
+    private static function defaultExists(GroupContract $group = null): bool
+    {
+        $calledClass = get_called_class();
+
+        return $calledClass::query()
+            ->byGroup($group)
+            ->isDefault()
+            ->exists();
+    }
+
     public function scopeByGroup(Builder $q, GroupContract $group = null)
     {
         return $q->where('group', $group);
@@ -26,17 +66,6 @@ abstract class Plan extends Model implements PlanContract
         return $q->where('is_default', 1);
     }
 
-    public function features()
-    {
-        return $this->hasMany(config('subscriptions.entities.plan_feature'));
-    }
-
-    public function intervals()
-    {
-        return $this->hasMany(config('subscriptions.entities.plan_interval'), 'plan_id')
-            ->orderBy('price');
-    }
-
     public function subscriptions()
     {
         return $this->hasMany(config('subscriptions.entities.plan_subscription'));
@@ -45,6 +74,11 @@ abstract class Plan extends Model implements PlanContract
     public function addFeature(PlanFeatureContract $feature)
     {
         $this->features()->save($feature);
+    }
+
+    public function features()
+    {
+        return $this->hasMany(config('subscriptions.entities.plan_feature'));
     }
 
     public function isDefault(): bool
@@ -62,6 +96,12 @@ abstract class Plan extends Model implements PlanContract
         return $this->intervals()->count() == 0 || $this->intervals()->first()->price == 0;
     }
 
+    public function intervals()
+    {
+        return $this->hasMany(config('subscriptions.entities.plan_interval'), 'plan_id')
+            ->orderBy('price');
+    }
+
     public function isNotFree(): bool
     {
         return $this->intervals()->count() > 0 && $this->intervals()->first()->price > 0;
@@ -70,36 +110,6 @@ abstract class Plan extends Model implements PlanContract
     public function hasManyIntervals(): bool
     {
         return $this->intervals()->count() > 1;
-    }
-
-    public static function create(
-        string $name,
-        string $description,
-        int $free_days,
-        int $sort_order,
-        bool $is_active = false,
-        bool $is_default = false,
-        GroupContract $group = null
-    ): Model {
-        $attributes = [
-            'name'          => $name,
-            'description'   => $description,
-            'free_days'     => $free_days,
-            'sort_order'    => $sort_order,
-            'is_active'     => $is_active,
-            'is_default'    => $is_default,
-            'group'         => $group,
-        ];
-        $calledClass = get_called_class();
-
-        if (! self::defaultExists($group)) {
-            $attributes['is_default'] = true;
-        }
-
-        $plan = new $calledClass($attributes);
-        $plan->save();
-
-        return $plan;
     }
 
     public function setFree()
@@ -140,15 +150,5 @@ abstract class Plan extends Model implements PlanContract
         }
 
         $this->save();
-    }
-
-    private static function defaultExists(GroupContract $group = null): bool
-    {
-        $calledClass = get_called_class();
-
-        return $calledClass::query()
-            ->byGroup($group)
-            ->isDefault()
-            ->exists();
     }
 }

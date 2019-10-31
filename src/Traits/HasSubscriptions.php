@@ -109,7 +109,7 @@ trait HasSubscriptions
 
     public function changePlanTo(PlanContract $plan, PlanIntervalContract $interval = null)
     {
-        if (!$this->hasActiveSubscription()) {
+        if (! $this->hasActiveSubscription()) {
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 
@@ -147,7 +147,7 @@ trait HasSubscriptions
 
     protected function upgradeTo(PlanIntervalContract $interval): SubscriptionContact
     {
-        if (!$this->hasActiveSubscription()) {
+        if (! $this->hasActiveSubscription()) {
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 
@@ -166,7 +166,7 @@ trait HasSubscriptions
 
     protected function downgradeTo(PlanIntervalContract $interval): SubscriptionContact
     {
-        if (!$this->hasActiveSubscription()) {
+        if (! $this->hasActiveSubscription()) {
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 

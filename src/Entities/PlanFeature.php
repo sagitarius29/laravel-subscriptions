@@ -13,21 +13,6 @@ class PlanFeature extends Model implements PlanFeatureContract
         'code', 'value', 'sort_order', 'is_consumable',
     ];
 
-    public function plan()
-    {
-        return $this->belongsTo(config('subscriptions.entities.plan'));
-    }
-
-    public function isConsumable(): bool
-    {
-        return $this->is_consumable;
-    }
-
-    public function getValue()
-    {
-        return $this->value;
-    }
-
     /**
      * @param  string  $code
      * @param  bool|int  $value
@@ -42,9 +27,9 @@ class PlanFeature extends Model implements PlanFeatureContract
         bool $isConsumable = null
     ): Model {
         $attributes = [
-            'code'          => $code,
-            'value'         => $value,
-            'sort_order'    => $sortOrder,
+            'code' => $code,
+            'value' => $value,
+            'sort_order' => $sortOrder,
         ];
 
         if (is_bool($value)) {
@@ -58,6 +43,21 @@ class PlanFeature extends Model implements PlanFeatureContract
         }
 
         return new self($attributes);
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(config('subscriptions.entities.plan'));
+    }
+
+    public function isConsumable(): bool
+    {
+        return $this->is_consumable;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
     }
 
     public function getCode(): string
