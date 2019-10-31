@@ -22,7 +22,7 @@ Add `Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::clas
 ```php
 'providers' => [
     /**
-    Some Providers
+    * Some Providers
     */
     Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::class
 ]
@@ -31,7 +31,7 @@ Add `Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::clas
 #### Config file and migrations
 Publish package config file and migrations with the following command:
 ```cmd
-php artisan vendor:publish --provider="Gerardojbaez\Laraplans\LaraplansServiceProvider"
+php artisan vendor:publish --provider="Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::class"
 ```
 
 Then run migrations:
