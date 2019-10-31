@@ -7,6 +7,7 @@ use Faker\Generator as FakerGenerator;
 use Orchestra\Testbench\TestCase as Testbench;
 use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 
 class TestCase extends Testbench
 {
@@ -30,8 +31,9 @@ class TestCase extends Testbench
      */
     protected function getEnvironmentSetUp($app)
     {
-        $this->registerEloquentFactory($app);
         $app['config']->set('database.default', 'testing');
+        $app['config']->set('subscriptions.entities.user', User::class);
+        $this->registerEloquentFactory($app);
     }
 
     /**

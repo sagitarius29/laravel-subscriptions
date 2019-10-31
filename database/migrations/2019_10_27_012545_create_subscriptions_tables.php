@@ -69,8 +69,6 @@ class CreateSubscriptionsTables extends Migration
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
-            $table->timestamp('upgrade_at')->nullable();
-            $table->timestamp('downgrade_at')->nullable();
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');

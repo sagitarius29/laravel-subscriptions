@@ -10,9 +10,8 @@ use Sagitarius29\LaravelSubscriptions\Exceptions\IntervalErrorException;
 class PlanIntervalTest extends TestCase
 {
     /** @test */
-    public function it_can_create_interval_for_plans()
+    public function send_error_exception_when_interval_range_is_not_available()
     {
-        //Error Interval
         $this->expectException(IntervalErrorException::class);
 
         PlanInterval::make(
@@ -20,7 +19,11 @@ class PlanIntervalTest extends TestCase
             30,
             4.99
         );
+    }
 
+    /** @test */
+    public function it_can_create_interval_for_plans()
+    {
         // Make Interval
         $interval = PlanInterval::make(
             PlanInterval::$DAY,
