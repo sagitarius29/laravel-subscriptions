@@ -87,7 +87,7 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('used')->nullable();
 
             $table->foreign('plan_feature_id')
-                ->references('id')->on('plans_features');
+                ->references('id')->on('plan_features');
 
             $table->timestamps();
         });
@@ -103,7 +103,7 @@ class CreateSubscriptionsTables extends Migration
         Schema::dropIfExists('subscriber_consumables');
         Schema::dropIfExists('subscriptions');
         Schema::dropIfExists('plan_features');
-        Schema::dropIfExists('plan_prices');
+        Schema::dropIfExists('plan_intervals');
         Schema::dropIfExists('plans');
     }
 }
