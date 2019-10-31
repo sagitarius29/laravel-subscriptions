@@ -5,9 +5,9 @@ namespace Sagitarius29\LaravelSubscriptions\Tests;
 use Faker\Factory as FakerFactory;
 use Faker\Generator as FakerGenerator;
 use Orchestra\Testbench\TestCase as Testbench;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 use Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 
 class TestCase extends Testbench
 {

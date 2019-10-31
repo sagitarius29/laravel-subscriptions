@@ -19,12 +19,12 @@ class Subscription extends Model implements SubscriptionContact
     ];
 
     protected $dates = [
-        'start_at', 'end_at'
+        'start_at', 'end_at',
     ];
 
     public static function make(PlanContract $plan, Carbon $start_at, Carbon $end_at = null): Model
     {
-        if (!$plan instanceof Model) {
+        if (! $plan instanceof Model) {
             throw new SubscriptionErrorException('$plan must be '.Model::class);
         }
 
@@ -38,6 +38,7 @@ class Subscription extends Model implements SubscriptionContact
     public function scopeCurrent(Builder $q)
     {
         $date = now();
+
         return $q->where('start_at', '<=', $date)
             ->where(function ($query) use ($date) {
                 $query->where('end_at', '>=', $date)->orWhereNull('end_at');

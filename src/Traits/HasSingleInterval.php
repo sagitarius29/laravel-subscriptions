@@ -4,7 +4,6 @@ namespace Sagitarius29\LaravelSubscriptions\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
-use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 
 trait HasSingleInterval
 {

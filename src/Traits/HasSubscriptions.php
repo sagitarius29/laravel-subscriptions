@@ -62,13 +62,6 @@ trait HasSubscriptions
             ->first();
     }
 
-    public function hasActiveSubscription(): bool
-    {
-        return $this->subscriptions()
-            ->current()
-            ->exists();
-    }
-
     public function subscriptions()
     {
         return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
@@ -116,7 +109,7 @@ trait HasSubscriptions
 
     public function changePlanTo(PlanContract $plan, PlanIntervalContract $interval = null)
     {
-        if (! $this->hasActiveSubscription()) {
+        if (!$this->hasActiveSubscription()) {
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 
@@ -145,9 +138,16 @@ trait HasSubscriptions
         return $this->downgradeTo($toInterval);
     }
 
+    public function hasActiveSubscription(): bool
+    {
+        return $this->subscriptions()
+            ->current()
+            ->exists();
+    }
+
     protected function upgradeTo(PlanIntervalContract $interval): SubscriptionContact
     {
-        if(! $this->hasActiveSubscription()) {
+        if (!$this->hasActiveSubscription()) {
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 
@@ -156,9 +156,17 @@ trait HasSubscriptions
         return $this->subscribeToInterval($interval);
     }
 
+    public function forceCancelSubscription()
+    {
+        $currentSubscription = $this->getActiveSubscription();
+        $currentSubscription->end_at = now()->subSecond();
+        $currentSubscription->cancelled_at = now();
+        $currentSubscription->save();
+    }
+
     protected function downgradeTo(PlanIntervalContract $interval): SubscriptionContact
     {
-        if(! $this->hasActiveSubscription()) {
+        if (!$this->hasActiveSubscription()) {
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 
@@ -192,14 +200,6 @@ trait HasSubscriptions
     public function cancelSubscription()
     {
         $currentSubscription = $this->getActiveSubscription();
-        $currentSubscription->cancelled_at = now();
-        $currentSubscription->save();
-    }
-
-    public function forceCancelSubscription()
-    {
-        $currentSubscription = $this->getActiveSubscription();
-        $currentSubscription->end_at = now()->subSecond();
         $currentSubscription->cancelled_at = now();
         $currentSubscription->save();
     }
