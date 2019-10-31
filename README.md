@@ -16,6 +16,29 @@ You can install the package via composer:
 composer require sagitarius29/laravel-subscriptions
 ```
 
+#### Register Service Provider
+Add `Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::class` to your file `config/app.php`
+
+```php
+'providers' => [
+    /**
+    * Some Providers
+    */
+    Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::class
+]
+```
+
+#### Config file and migrations
+Publish package config file and migrations with the following command:
+```cmd
+php artisan vendor:publish --provider="Sagitarius29\LaravelSubscriptions\LaravelSubscriptionsServiceProvider::class"
+```
+
+Then run migrations:
+```cmd
+php artisan migrate
+```
+
 ## Features Overview
 
 - Create plans and his features or consumables. (consumables is in development)
@@ -23,7 +46,6 @@ composer require sagitarius29/laravel-subscriptions
 - Your user can subscribe to a plan.
 - The user can renew, cancel, upgrade or downgrade his subscription.
 - Group your plans now is very simple.
-- All code has test (If missing please contribute to project)
 - A lot more
 
 ## A few examples

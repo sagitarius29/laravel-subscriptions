@@ -3,7 +3,6 @@
 namespace Sagitarius29\LaravelSubscriptions;
 
 use Illuminate\Support\ServiceProvider;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 
 class LaravelSubscriptionsServiceProvider extends ServiceProvider
 {
@@ -21,9 +20,9 @@ class LaravelSubscriptionsServiceProvider extends ServiceProvider
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         if ($this->app->runningInConsole()) {
-            /*$this->publishes([
-                __DIR__.'/../config/config.php' => config_path('laravel-subscriptions.php'),
-            ], 'config');*/
+            $this->publishes([
+                __DIR__.'/../config/config.php' => config_path('subscriptions.php'),
+            ], 'config');
 
             // Publishing the views.
             /*$this->publishes([
@@ -53,7 +52,7 @@ class LaravelSubscriptionsServiceProvider extends ServiceProvider
         // Automatically apply the package configuration
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'subscriptions');
 
-        $this->app->bind(PlanContract::class, config('subscriptions.entities.plan'));
+        //$this->app->bind(PlanContract::class, config('subscriptions.entities.plan'));
 
         // Register the main class to use with the facade
         /*$this->app->singleton('laravel-subscriptions', function () {
