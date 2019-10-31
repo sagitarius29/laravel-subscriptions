@@ -65,7 +65,7 @@ class CreateSubscriptionsTables extends Migration
             $table->increments('id');
             $table->integer('plan_id')->unsigned();
             $table->string('subscriber_type')->nullable();
-            $table->timestamp('subscriber_id')->nullable();
+            $table->integer('subscriber_id')->nullable();
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
