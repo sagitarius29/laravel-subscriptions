@@ -17,21 +17,6 @@ class Group implements GroupContract
         $this->modelPlan = config('subscriptions.entities.plan');
     }
 
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    public function plans(): Builder
-    {
-        return $this->modelPlan::query()->byGroup($this);
-    }
-
-    public function addPlan(PlanContract $plan): void
-    {
-        $plan->changeToGroup($this);
-    }
-
     public function addPlans(array $plans): void
     {
         foreach ($plans as $plan) {
@@ -39,9 +24,19 @@ class Group implements GroupContract
         }
     }
 
+    public function addPlan(PlanContract $plan): void
+    {
+        $plan->changeToGroup($this);
+    }
+
     public function hasPlans(): bool
     {
         return $this->plans()->count() > 0;
+    }
+
+    public function plans(): Builder
+    {
+        return $this->modelPlan::query()->byGroup($this);
     }
 
     public function getDefaultPlan(): ?PlanContract
@@ -52,5 +47,10 @@ class Group implements GroupContract
     public function __toString(): string
     {
         return $this->getCode();
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
     }
 }

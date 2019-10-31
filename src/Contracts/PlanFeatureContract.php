@@ -6,17 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 interface PlanFeatureContract
 {
-    public function plan();
-
-    public function isConsumable(): bool;
-
-    public function getCode(): string;
-
-    public function getValue();
-
     /**
      * @param  string  $code
-     * @param int|bool $value
+     * @param  int|bool  $value
      * @param  int  $sortOrder
      * @param  bool  $isConsumable
      * @return Model
@@ -27,4 +19,12 @@ interface PlanFeatureContract
         int $sortOrder,
         bool $isConsumable = null
     ): Model;
+
+    public function plan();
+
+    public function isConsumable(): bool;
+
+    public function getCode(): string;
+
+    public function getValue();
 }

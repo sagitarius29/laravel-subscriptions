@@ -12,13 +12,8 @@ use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
 
 trait HasSubscriptions
 {
-    public function subscriptions()
-    {
-        return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
-    }
-
     /**
-     * @param PlanContract|PlanIntervalContract $planOrInterval
+     * @param  PlanContract|PlanIntervalContract  $planOrInterval
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function subscribeTo($planOrInterval)
@@ -38,7 +33,7 @@ trait HasSubscriptions
             );
         }
 
-        $currentSubscription = $this->getCurrentSubscription();
+        $currentSubscription = $this->getActiveSubscription();
         $start_at = null;
         $end_at = null;
 
@@ -60,24 +55,16 @@ trait HasSubscriptions
         return $subscription;
     }
 
-    public function subscribeToInterval(PlanIntervalContract $interval)
+    public function getActiveSubscription(): ?SubscriptionContact
     {
-        $currentSubscription = $this->getCurrentSubscription();
-        $start_at = null;
-        $end_at = null;
+        return $this->subscriptions()
+            ->current()
+            ->first();
+    }
 
-        if ($currentSubscription == null) {
-            $start_at = now();
-        } else {
-            $start_at = $currentSubscription->getExpirationDate();
-        }
-
-        $end_at = $this->calculateExpireDate($start_at, $interval);
-
-        $subscription = Subscription::make($interval->plan, $start_at, $end_at);
-        $subscription = $this->subscriptions()->save($subscription);
-
-        return $subscription;
+    public function subscriptions()
+    {
+        return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
     }
 
     private function calculateExpireDate(Carbon $start_at, PlanIntervalContract $interval)
@@ -100,23 +87,121 @@ trait HasSubscriptions
         }
     }
 
-    public function changePlanTo(PlanContract $plan)
+    public function subscribeToInterval(PlanIntervalContract $interval): SubscriptionContact
     {
+        $currentSubscription = $this->getActiveSubscription();
+        $start_at = null;
+        $end_at = null;
+
+        if ($currentSubscription == null) {
+            $start_at = now();
+        } else {
+            $start_at = $currentSubscription->getExpirationDate();
+        }
+
+        $end_at = $this->calculateExpireDate($start_at, $interval);
+
+        $subscription = Subscription::make($interval->plan, $start_at, $end_at);
+        $subscription = $this->subscriptions()->save($subscription);
+
+        return $subscription;
     }
 
-    public function renewSubscription(): bool
+    public function changePlanTo(PlanContract $plan, PlanIntervalContract $interval = null)
     {
+        if (! $this->hasActiveSubscription()) {
+            throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
+        }
+
+        if ($plan->hasManyIntervals() && $interval == null) {
+            throw new SubscriptionErrorException('The plan has many intervals, please indicate a interval.');
+        }
+
+        $currentSubscription = $this->getActiveSubscription();
+        $currentPlan = $currentSubscription->plan;
+        $currentIntervalPrice = $currentPlan->isFree() ? 0.00 : $currentPlan->getInterval()->getPrice();
+
+        $toInterval = $plan->getInterval();
+
+        if ($currentPlan->id == $plan->id) {
+            throw new SubscriptionErrorException('You can\'t change to same plan. You need change to other plan.');
+        }
+
+        if ($interval !== null) {
+            $toInterval = $interval;
+        }
+
+        if ($currentIntervalPrice < $toInterval->getPrice()) {
+            return $this->upgradeTo($toInterval);
+        }
+
+        return $this->downgradeTo($toInterval);
     }
 
-    public function cancelSubscription(): bool
-    {
-    }
-
-    public function getCurrentSubscription(): ?SubscriptionContact
+    public function hasActiveSubscription(): bool
     {
         return $this->subscriptions()
-            ->current(now())
-            ->first();
+            ->current()
+            ->exists();
+    }
+
+    protected function upgradeTo(PlanIntervalContract $interval): SubscriptionContact
+    {
+        if (! $this->hasActiveSubscription()) {
+            throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
+        }
+
+        $this->forceCancelSubscription();
+
+        return $this->subscribeToInterval($interval);
+    }
+
+    public function forceCancelSubscription()
+    {
+        $currentSubscription = $this->getActiveSubscription();
+        $currentSubscription->end_at = now()->subSecond();
+        $currentSubscription->cancelled_at = now();
+        $currentSubscription->save();
+    }
+
+    protected function downgradeTo(PlanIntervalContract $interval): SubscriptionContact
+    {
+        if (! $this->hasActiveSubscription()) {
+            throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
+        }
+
+        return $this->subscribeToInterval($interval);
+    }
+
+    public function renewSubscription(PlanIntervalContract $interval = null)
+    {
+        $currentSubscription = $this->getActiveSubscription();
+
+        if ($interval === null) {
+            $plan = $currentSubscription->plan;
+
+            if ($plan->hasManyIntervals()) {
+                throw new SubscriptionErrorException(
+                    'The plan you want will subscribe has many intervals, please consider renew to a interval of plan'
+                );
+            }
+
+            $interval = $plan->intervals()->first();
+        }
+
+        $newExpireDate = $this->calculateExpireDate($currentSubscription->end_at, $interval);
+
+        $currentSubscription->end_at = $newExpireDate;
+        $currentSubscription->save();
+
+        return $currentSubscription;
+    }
+
+    public function cancelSubscription()
+    {
+        $currentSubscription = $this->getActiveSubscription();
+        $currentSubscription->cancelled_at = now();
+        $currentSubscription->save();
     }
 
     public function getConsumables()

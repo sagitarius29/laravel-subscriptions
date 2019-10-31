@@ -3,7 +3,6 @@
 namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
 use Carbon\Carbon;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
@@ -14,34 +13,45 @@ use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
 
 class SubscriptionsTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use RefreshDatabase;
 
-    protected $now = '2019-10-20 00:00:00';
+    protected $now;
+
+    public function __construct($name = null, array $data = [], $dataName = '')
+    {
+        parent::__construct($name, $data, $dataName);
+        $this->now = Carbon::createFromFormat('Y-m-d H:i:s', '2019-10-20 00:00:00');
+    }
 
     /** @test */
-    public function a_user_can_subscribe_to_a_plan_perpetual()
+    public function a_user_can_subscribe_to_a_perpetual_plan()
     {
-        Carbon::setTestNow(Carbon::createFromFormat('Y-m-d H:i:s', $this->now));
+        Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
         $plan = factory(Plan::class)->create();
 
         $subscription = $user->subscribeTo($plan);
 
-        // when plan is free and the plan has't prices
+        // when plan is free and the plan has't intervals
         $this->assertTrue($plan->isFree());
         $this->assertTrue($plan->intervals()->count() === 0);
 
         $this->assertDatabaseHas((new Subscription())->getTable(), [
-            'plan_id'           => $plan->id,
-            'subscriber_type'   => User::class,
-            'subscriber_id'     => $user->id,
-            'start_at'          => $this->now,
-            'end_at'            => null,
+            'plan_id' => $plan->id,
+            'subscriber_type' => User::class,
+            'subscriber_id' => $user->id,
+            'start_at' => $this->now,
+            'end_at' => null,
         ]);
 
         // the subscription is perpetual
         $this->assertTrue($subscription->isPerpetual());
+        $this->assertEquals(0, $subscription->getElapsedDays());
+        $this->assertEquals(null, $subscription->getDaysLeft());
+        $this->assertEquals($this->now, $subscription->getStartDate());
+        $this->assertEquals(null, $subscription->getExpirationDate());
+        $this->assertEquals($user->id, $subscription->subscriber->id);
 
         // when plan has price but not interval
         $otherUser = factory(User::class)->create();
@@ -52,12 +62,14 @@ class SubscriptionsTest extends TestCase
         $subscription = $otherUser->subscribeTo($plan);
 
         $this->assertTrue($subscription->isPerpetual());
+        $this->assertEquals(0, $subscription->getElapsedDays());
+        $this->assertEquals(null, $subscription->getDaysLeft());
     }
 
     /** @test */
     public function user_can_subscribe_to_plan_with_interval()
     {
-        Carbon::setTestNow(Carbon::createFromFormat('Y-m-d H:i:s', $this->now));
+        Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
         $plan = factory(Plan::class)->create();
@@ -70,21 +82,25 @@ class SubscriptionsTest extends TestCase
 
         $this->assertNotTrue($plan->hasManyIntervals());
 
-        $user->subscribeTo($plan);
+        $subscription = $user->subscribeTo($plan);
 
         $this->assertDatabaseHas((new Subscription())->getTable(), [
-            'plan_id'           => $plan->id,
-            'subscriber_type'   => User::class,
-            'subscriber_id'     => $user->id,
-            'start_at'          => now()->toDateTimeString(),
-            'end_at'            => now()->addMonth($interval->getUnit())->toDateTimeString(),
+            'plan_id' => $plan->id,
+            'subscriber_type' => User::class,
+            'subscriber_id' => $user->id,
+            'start_at' => now()->toDateTimeString(),
+            'end_at' => now()->addMonth($interval->getUnit())->toDateTimeString(),
         ]);
+
+        $this->assertNotTrue($subscription->isPerpetual());
+        $this->assertEquals(0, $subscription->getElapsedDays());
+        $this->assertEquals(31, $subscription->getDaysLeft());
     }
 
     /** @test */
     public function user_can_subscribe_to_plan_with_many_intervals()
     {
-        Carbon::setTestNow(Carbon::createFromFormat('Y-m-d H:i:s', $this->now));
+        Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
 
@@ -110,33 +126,119 @@ class SubscriptionsTest extends TestCase
         $user->subscribeTo($intervals[1]); // 3 months for 4.90
 
         $this->assertDatabaseHas((new Subscription())->getTable(), [
-            'plan_id'           => $plan->id,
-            'subscriber_type'   => User::class,
-            'subscriber_id'     => $user->id,
-            'start_at'          => now()->toDateTimeString(),
-            'end_at'            => now()->addMonth($intervals[1]->getUnit())->toDateTimeString(),
+            'plan_id' => $plan->id,
+            'subscriber_type' => User::class,
+            'subscriber_id' => $user->id,
+            'start_at' => now()->toDateTimeString(),
+            'end_at' => now()->addMonths($intervals[1]->getUnit())->toDateTimeString(),
         ]);
     }
 
+    /** @test */
     public function user_can_renew_his_subscription()
     {
-        Carbon::setTestNow(Carbon::createFromFormat('Y-m-d H:i:s', $this->now));
+        $dayOfObtainPlan = $this->now;
+        Carbon::setTestNow($dayOfObtainPlan);
 
         $user = factory(User::class)->create();
         $plan = factory(Plan::class)->create();
 
         $interval = PlanInterval::make(PlanInterval::$MONTH, 1, 4.90);
         $plan->setInterval($interval);
+
+        // it's subscribing
+        $user->subscribeToPlan($plan);
+
+        $subscriptionData = [
+            'plan_id' => $plan->id,
+            'subscriber_type' => User::class,
+            'subscriber_id' => $user->id,
+            'start_at' => now()->toDateTimeString(),
+            'end_at' => now()->addMonths(1)->toDateTimeString(),
+        ];
+
+        $this->assertDatabaseHas((new Subscription())->getTable(), $subscriptionData);
+
+        // 20 days later;
+        Carbon::setTestNow(now()->addDays(20));
+
+        // renew subscription
+        $user->renewSubscription();
+        $subscriptionData['end_at'] = $dayOfObtainPlan->addMonths(2)->toDateTimeString();
+
+        $this->assertDatabaseHas((new Subscription())->getTable(), $subscriptionData);
     }
 
+    /** @test */
     public function user_can_change_plan()
     {
-        //when upgrade plan
+        Carbon::setTestNow($this->now);
+
+        $user = factory(User::class)->create();
+        $freePlan = factory(Plan::class)->create();
+        $firstPlan = factory(Plan::class)->create()
+            ->setInterval(PlanInterval::make(PlanInterval::$MONTH, 1, 4.90));
+        $secondPlan = factory(Plan::class)->create()
+            ->setInterval(PlanInterval::make(PlanInterval::$YEAR, 1, 39.00));
+
+        $this->assertNotTrue($user->hasActiveSubscription());
+
+        // it's subscribing to free plan
+        $subscription = $user->subscribeTo($freePlan);
+        $this->assertTrue($user->hasActiveSubscription());
+
+        // 20 days later;
+        Carbon::setTestNow(now()->addDays(20));
+
+        // it's perpetual subscription because the plan has not a interval
+        $this->assertEquals(null, $subscription->getExpirationDate());
+        // it's upgrade plan because first plan has a higher price
+        $subscriptionUpgraded = $user->changePlanTo($secondPlan);
+
+        $this->assertEquals(now()->subSecond(), $subscription->refresh()->getExpirationDate());
+        $this->assertEquals(now()->addYear(), $subscriptionUpgraded->getExpirationDate());
+        $this->assertEquals($secondPlan->id, $user->getActiveSubscription()->plan->id);
 
         //when downgrade plan
+        $subscriptionDowngraded = $user->changePlanTo($firstPlan);
+
+        $this->assertEquals(now()->addYear(), $subscriptionUpgraded->refresh()->getExpirationDate());
+        $this->assertEquals(now()->addYear(), $subscriptionDowngraded->getStartDate());
+        $this->assertEquals($secondPlan->id, $user->getActiveSubscription()->plan->id);
+
+        Carbon::setTestNow(now()->addYear()->addSecond());
+        $this->assertEquals($firstPlan->id, $user->getActiveSubscription()->plan->id);
     }
 
+    /** @test */
     public function user_can_cancel_his_subscription()
     {
+        Carbon::setTestNow($this->now);
+
+        $user = factory(User::class)->create();
+        $freePlan = factory(Plan::class)->create();
+        $firstPlan = factory(Plan::class)->create()
+            ->setInterval(PlanInterval::make(PlanInterval::$MONTH, 1, 4.90));
+
+        $this->assertNotTrue($user->hasActiveSubscription());
+        $user->subscribeToPlan($freePlan);
+        $this->assertTrue($user->hasActiveSubscription());
+
+        // For free plans, you must be cancel with forceCancelSubscription()
+
+        $user->forceCancelSubscription();
+        $this->assertNotTrue($user->hasActiveSubscription());
+
+        $user->subscribeToPlan($firstPlan);
+        $this->assertTrue($user->hasActiveSubscription());
+
+        $user->cancelSubscription();
+
+        // the subscription are active while not expire but will cancel in expire date
+        Carbon::setTestNow(now()->addDays(30));
+        $this->assertTrue($user->hasActiveSubscription());
+
+        Carbon::setTestNow(now()->addDays(1)->addSecond());
+        $this->assertNotTrue($user->hasActiveSubscription());
     }
 }

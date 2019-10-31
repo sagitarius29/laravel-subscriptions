@@ -5,8 +5,10 @@ namespace Sagitarius29\LaravelSubscriptions\Entities;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
+use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
 
 class Subscription extends Model implements SubscriptionContact
 {
@@ -16,10 +18,40 @@ class Subscription extends Model implements SubscriptionContact
         'plan_id', 'start_at', 'end_at',
     ];
 
-    public function scopeCurrent(Builder $q, Carbon $date)
+    protected $dates = [
+        'start_at', 'end_at',
+    ];
+
+    public static function make(PlanContract $plan, Carbon $start_at, Carbon $end_at = null): Model
     {
-        return $q->where('start_at', '<', $date)
-            ->where('end_at', '>', $date);
+        if (! $plan instanceof Model) {
+            throw new SubscriptionErrorException('$plan must be '.Model::class);
+        }
+
+        return new self([
+            'plan_id' => $plan->id,
+            'start_at' => $start_at,
+            'end_at' => $end_at,
+        ]);
+    }
+
+    public function scopeCurrent(Builder $q)
+    {
+        $date = now();
+
+        return $q->where('start_at', '<=', $date)
+            ->where(function ($query) use ($date) {
+                $query->where('end_at', '>=', $date)->orWhereNull('end_at');
+            });
+    }
+
+    public function getDaysLeft(): ?int
+    {
+        if ($this->isPerpetual()) {
+            return null;
+        }
+
+        return now()->diffInDays($this->end_at);
     }
 
     public function isPerpetual(): bool
@@ -27,37 +59,28 @@ class Subscription extends Model implements SubscriptionContact
         return $this->end_at == null;
     }
 
-    public function getDaysLeft(): int
-    {
-        // TODO: Implement getDaysLeft() method.
-    }
-
     public function getElapsedDays(): int
     {
-        // TODO: Implement getElapsedDays() method.
+        return now()->diffInDays($this->start_at);
     }
 
     public function getExpirationDate(): ?Carbon
     {
-        // TODO: Implement getExpirationDate() method.
+        return $this->end_at;
     }
 
-    public function getStartDate(): ?Carbon
+    public function getStartDate(): Carbon
     {
-        // TODO: Implement getStartDate() method.
+        return $this->start_at;
     }
 
     public function subscriber()
     {
-        // TODO: Implement subscriber() method.
+        return $this->morphTo();
     }
 
-    public static function make(PlanContract $plan, Carbon $start_at, Carbon $end_at = null): Model
+    public function plan(): BelongsTo
     {
-        return new self([
-            'plan_id'   => $plan->id,
-            'start_at'  => $start_at,
-            'end_at'    => $end_at,
-        ]);
+        return $this->belongsTo(config('subscriptions.entities.plan'));
     }
 }
