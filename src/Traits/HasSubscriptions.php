@@ -160,12 +160,12 @@ trait HasSubscriptions
             throw new SubscriptionErrorException('You need a subscription for upgrade to other.');
         }
 
-        $this->forceCancelSubscription();
+        $this->forceUnsubscribe();
 
         return $this->subscribeToInterval($interval);
     }
 
-    public function forceCancelSubscription()
+    public function forceUnsubscribe()
     {
         $currentSubscription = $this->getActiveSubscription();
         $currentSubscription->end_at = now()->subSecond();
@@ -206,7 +206,7 @@ trait HasSubscriptions
         return $currentSubscription;
     }
 
-    public function cancelSubscription()
+    public function unsubscribe()
     {
         $currentSubscription = $this->getActiveSubscription();
         $currentSubscription->cancelled_at = now();

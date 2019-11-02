@@ -224,15 +224,15 @@ class SubscriptionsTest extends TestCase
         $user->subscribeToPlan($freePlan);
         $this->assertTrue($user->hasActiveSubscription());
 
-        // For free plans, you must be cancel with forceCancelSubscription()
+        // For free plans, you must be cancel with forceUnsubscribe()
 
-        $user->forceCancelSubscription();
+        $user->forceUnsubscribe();
         $this->assertNotTrue($user->hasActiveSubscription());
 
         $user->subscribeToPlan($firstPlan);
         $this->assertTrue($user->hasActiveSubscription());
 
-        $user->cancelSubscription();
+        $user->unsubscribe();
 
         // the subscription are active while not expire but will cancel in expire date
         Carbon::setTestNow(now()->addDays(30));

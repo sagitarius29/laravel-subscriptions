@@ -6,7 +6,9 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://scrutinizer-ci.com/g/sagitarius29/laravel-subscriptions)
 [![Total Downloads](https://img.shields.io/packagist/dt/sagitarius29/laravel-subscriptions.svg?style=flat-square)](https://packagist.org/packages/sagitarius29/laravel-subscriptions)
 
-A simple laravel package for Subscriptions
+A simple laravel package for Subscriptions.
+
+All ideas are welcome, please send your issue in: [Send Your Issue or Questions](https://github.com/sagitarius29/laravel-subscriptions/issues)
 
 ## Installation
 
@@ -87,7 +89,7 @@ $plan->features()->saveMany($features);
 $plan->isFree(); // return true;
 
 // adding interval of price
-$interval = PlanInterval::make(PlanInterval::$MONTH, 1, 4.90);
+$interval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
 $plan->setInterval($interval);
 
 $plan->isFree(); // return false;
@@ -129,10 +131,10 @@ $user->changePlanTo($secondPlan);
 $user = \Auth::user();
 
 // the subscription is will end in the expiration date
-$user->cancelSubscription();
+$user->unsubscribe();
 
 // the subscription end now
-$user->forceCancelSubscription();
+$user->forceUnsubscribe();
 ````
 
 ### Testing
