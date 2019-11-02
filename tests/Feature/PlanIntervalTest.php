@@ -26,7 +26,7 @@ class PlanIntervalTest extends TestCase
     {
         // Make Interval
         $interval = PlanInterval::make(
-            PlanInterval::$DAY,
+            PlanInterval::DAY,
             30,
             4.99
         );
@@ -34,7 +34,7 @@ class PlanIntervalTest extends TestCase
         $plan->setInterval($interval);
 
         $this->assertEquals($plan->id, $interval->plan->id);
-        $this->assertEquals(PlanInterval::$DAY, $interval->getType());
+        $this->assertEquals(PlanInterval::DAY, $interval->getType());
         $this->assertEquals(30, $interval->getUnit());
         $this->assertEquals(4.99, $interval->getPrice());
         $this->assertNotTrue($interval->isInfinite());
@@ -42,7 +42,7 @@ class PlanIntervalTest extends TestCase
 
         // Interval Free
         $interval = PlanInterval::make(
-            PlanInterval::$DAY,
+            PlanInterval::DAY,
             30,
             0
         );

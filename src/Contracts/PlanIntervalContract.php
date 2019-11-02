@@ -4,6 +4,10 @@ namespace Sagitarius29\LaravelSubscriptions\Contracts;
 
 interface PlanIntervalContract
 {
+    const DAY = 'day';
+    const MONTH = 'month';
+    const YEAR = 'year';
+
     public static function make($type, int $unit, float $price): self;
 
     public static function makeInfinite(float $price): self;

@@ -34,7 +34,7 @@ class CreateSubscriptionsTables extends Migration
             $table->increments('id');
             $table->integer('plan_id')->unsigned();
             $table->decimal('price');
-            $table->enum('interval', ['day',  'month',  'year'])->nullable();
+            $table->enum('interval', ['day', 'month', 'year'])->nullable();
             $table->integer('interval_unit')->nullable();
 
             $table->foreign('plan_id')
@@ -65,7 +65,7 @@ class CreateSubscriptionsTables extends Migration
             $table->increments('id');
             $table->integer('plan_id')->unsigned();
             $table->string('subscriber_type')->nullable();
-            $table->timestamp('subscriber_id')->nullable();
+            $table->integer('subscriber_id')->nullable();
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
@@ -87,7 +87,7 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('used')->nullable();
 
             $table->foreign('plan_feature_id')
-                ->references('id')->on('plans_features');
+                ->references('id')->on('plan_features');
 
             $table->timestamps();
         });
@@ -103,7 +103,7 @@ class CreateSubscriptionsTables extends Migration
         Schema::dropIfExists('subscriber_consumables');
         Schema::dropIfExists('subscriptions');
         Schema::dropIfExists('plan_features');
-        Schema::dropIfExists('plan_prices');
+        Schema::dropIfExists('plan_intervals');
         Schema::dropIfExists('plans');
     }
 }
