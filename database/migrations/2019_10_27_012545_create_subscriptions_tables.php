@@ -38,7 +38,8 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('unit')->nullable();
 
             $table->foreign('plan_id')
-                ->references('id')->on('plans');
+                ->references('id')->on('plans')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -54,7 +55,8 @@ class CreateSubscriptionsTables extends Migration
             $table->boolean('is_consumable')->default(0);
 
             $table->foreign('plan_id')
-                ->references('id')->on('plans');
+                ->references('id')->on('plans')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });

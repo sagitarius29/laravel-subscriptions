@@ -16,6 +16,16 @@ abstract class Plan extends Model implements PlanContract
         'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default', 'group',
     ];
 
+    /**
+     * @param  string  $name
+     * @param  string  $description
+     * @param  int  $free_days
+     * @param  int  $sort_order
+     * @param  bool  $is_active
+     * @param  bool  $is_default
+     * @param  GroupContract|null  $group
+     * @return Model|PlanContract
+     */
     public static function create(
         string $name,
         string $description,
@@ -24,7 +34,7 @@ abstract class Plan extends Model implements PlanContract
         bool $is_active = false,
         bool $is_default = false,
         GroupContract $group = null
-    ): Model {
+    ): PlanContract {
         $attributes = [
             'name' => $name,
             'description' => $description,
@@ -150,5 +160,15 @@ abstract class Plan extends Model implements PlanContract
         }
 
         $this->save();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
     }
 }

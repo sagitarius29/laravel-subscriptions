@@ -190,4 +190,25 @@ class PlansTest extends TestCase
         $this->assertTrue($otherPlan->hasManyIntervals());
         $this->assertNotTrue($otherPlan->isDefault());
     }
+
+    /** @test */
+    public function it_can_delete_a_plan()
+    {
+        $plan = Plan::create(
+            'name of plan',
+            'this is a description',
+            0,
+            1
+        );
+
+        $plan->setInterval(
+            PlanInterval::make(PlanInterval::MONTH, 1, 10.50)
+        );
+
+        $this->assertDatabaseHas($plan->getTable(), $plan->toArray());
+
+        $plan->delete();
+
+        $this->assertDatabaseMissing($plan->getTable(), $plan->toArray());
+    }
 }
