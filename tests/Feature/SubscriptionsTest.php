@@ -75,7 +75,7 @@ class SubscriptionsTest extends TestCase
         $plan = factory(Plan::class)->create();
 
         //when plan has one interval
-        $interval = PlanInterval::make(PlanInterval::$MONTH, 1, 4.90);
+        $interval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
         $plan->setInterval($interval);
 
         $this->assertTrue($plan->isNotFree());
@@ -115,9 +115,9 @@ class SubscriptionsTest extends TestCase
         );
 
         $intervals = [
-            PlanInterval::make(PlanInterval::$MONTH, 1, 4.90),
-            PlanInterval::make(PlanInterval::$MONTH, 3, 11.90),
-            PlanInterval::make(PlanInterval::$YEAR, 1, 49.90),
+            PlanInterval::make(PlanInterval::MONTH, 1, 4.90),
+            PlanInterval::make(PlanInterval::MONTH, 3, 11.90),
+            PlanInterval::make(PlanInterval::YEAR, 1, 49.90),
         ];
 
         $plan->setIntervals($intervals);
@@ -143,7 +143,7 @@ class SubscriptionsTest extends TestCase
         $user = factory(User::class)->create();
         $plan = factory(Plan::class)->create();
 
-        $interval = PlanInterval::make(PlanInterval::$MONTH, 1, 4.90);
+        $interval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
         $plan->setInterval($interval);
 
         // it's subscribing
@@ -177,9 +177,9 @@ class SubscriptionsTest extends TestCase
         $user = factory(User::class)->create();
         $freePlan = factory(Plan::class)->create();
         $firstPlan = factory(Plan::class)->create()
-            ->setInterval(PlanInterval::make(PlanInterval::$MONTH, 1, 4.90));
+            ->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 4.90));
         $secondPlan = factory(Plan::class)->create()
-            ->setInterval(PlanInterval::make(PlanInterval::$YEAR, 1, 39.00));
+            ->setInterval(PlanInterval::make(PlanInterval::YEAR, 1, 39.00));
 
         $this->assertNotTrue($user->hasActiveSubscription());
 
@@ -218,7 +218,7 @@ class SubscriptionsTest extends TestCase
         $user = factory(User::class)->create();
         $freePlan = factory(Plan::class)->create();
         $firstPlan = factory(Plan::class)->create()
-            ->setInterval(PlanInterval::make(PlanInterval::$MONTH, 1, 4.90));
+            ->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 4.90));
 
         $this->assertNotTrue($user->hasActiveSubscription());
         $user->subscribeToPlan($freePlan);

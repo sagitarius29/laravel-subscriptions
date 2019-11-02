@@ -3,6 +3,8 @@
 namespace Sagitarius29\LaravelSubscriptions\Traits;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
@@ -14,9 +16,9 @@ trait HasSubscriptions
 {
     /**
      * @param  PlanContract|PlanIntervalContract  $planOrInterval
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return Model|SubscriptionContact
      */
-    public function subscribeTo($planOrInterval)
+    public function subscribeTo($planOrInterval): SubscriptionContact
     {
         if ($planOrInterval instanceof PlanContract) {
             return $this->subscribeToPlan($planOrInterval);
@@ -25,7 +27,12 @@ trait HasSubscriptions
         return $this->subscribeToInterval($planOrInterval);
     }
 
-    public function subscribeToPlan(PlanContract $plan)
+    /**
+     * @param  PlanContract  $plan
+     * @return Model|SubscriptionContact
+     * @throws SubscriptionErrorException
+     */
+    public function subscribeToPlan(PlanContract $plan): SubscriptionContact
     {
         if ($plan->hasManyIntervals()) {
             throw new SubscriptionErrorException(
@@ -46,7 +53,7 @@ trait HasSubscriptions
         if ($plan->isFree()) {
             $end_at = null;
         } else {
-            $end_at = $this->calculateExpireDate($start_at, $plan->intervals()->first());
+            $end_at = $this->calculateExpireDate($start_at, optional($plan->intervals())->first());
         }
 
         $subscription = Subscription::make($plan, $start_at, $end_at);
@@ -62,7 +69,7 @@ trait HasSubscriptions
             ->first();
     }
 
-    public function subscriptions()
+    public function subscriptions(): MorphMany
     {
         return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
     }
@@ -72,17 +79,19 @@ trait HasSubscriptions
         $end_at = Carbon::createFromTimestamp($start_at->timestamp);
 
         switch ($interval->getType()) {
-            case PlanInterval::$DAY:
-                return $end_at->days($interval->getUnit());
+            case PlanInterval::DAY:
+                return $end_at->addDays($interval->getUnit());
                 break;
-            case PlanInterval::$MONTH:
+            case PlanInterval::MONTH:
                 return $end_at->addMonths($interval->getUnit());
                 break;
-            case PlanInterval::$YEAR:
+            case PlanInterval::YEAR:
                 return $end_at->addYears($interval->getUnit());
                 break;
             default:
-                //TODO error exception
+                throw new SubscriptionErrorException(
+                    'The interval \''.$interval->getType().'\' selected is not available.'
+                );
                 break;
         }
     }

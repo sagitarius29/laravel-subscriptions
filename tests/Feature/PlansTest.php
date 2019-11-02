@@ -95,7 +95,7 @@ class PlansTest extends TestCase
         $this->assertTrue(in_array(HasSingleInterval::class, class_uses($plan)));
 
         // Interval is not free
-        $firstInterval = PlanInterval::make(PlanInterval::$MONTH, 1, 10.50);
+        $firstInterval = PlanInterval::make(PlanInterval::MONTH, 1, 10.50);
 
         $plan->setInterval($firstInterval);
 
@@ -106,14 +106,14 @@ class PlansTest extends TestCase
         $this->assertTrue($plan->isNotFree());
 
         // it can change interval
-        $otherInterval = PlanInterval::make(PlanInterval::$DAY, 15, 50.00);
+        $otherInterval = PlanInterval::make(PlanInterval::DAY, 15, 50.00);
 
         $plan->setInterval($otherInterval);
 
         $this->assertDatabaseMissing((new PlanInterval())->getTable(), $firstInterval->toArray());
         $this->assertDatabaseHas((new PlanInterval())->getTable(), $otherInterval->toArray());
 
-        $this->assertEquals(PlanInterval::$DAY, $plan->getInterval()->getType());
+        $this->assertEquals(PlanInterval::DAY, $plan->getInterval()->getType());
         $this->assertEquals(15, $plan->getInterval()->getUnit());
         $this->assertEquals(50.00, $plan->getInterval()->getPrice());
 
@@ -125,7 +125,7 @@ class PlansTest extends TestCase
         $this->assertDatabaseMissing((new PlanInterval())->getTable(), $otherInterval->toArray());
 
         //the interval price is zero
-        $intervalWithoutPrice = PlanInterval::make(PlanInterval::$DAY, 15, 0.00);
+        $intervalWithoutPrice = PlanInterval::make(PlanInterval::DAY, 15, 0.00);
 
         $plan->setInterval($intervalWithoutPrice);
 
@@ -154,9 +154,9 @@ class PlansTest extends TestCase
         $this->assertTrue(in_array(HasManyIntervals::class, class_uses($plan)));
 
         $intervals = [
-            PlanInterval::make(PlanInterval::$MONTH, 1, 4.90),
-            PlanInterval::make(PlanInterval::$MONTH, 3, 11.90),
-            PlanInterval::make(PlanInterval::$YEAR, 1, 49.90),
+            PlanInterval::make(PlanInterval::MONTH, 1, 4.90),
+            PlanInterval::make(PlanInterval::MONTH, 3, 11.90),
+            PlanInterval::make(PlanInterval::YEAR, 1, 49.90),
         ];
 
         $plan->setIntervals($intervals);
@@ -177,10 +177,10 @@ class PlansTest extends TestCase
             1
         );
 
-        $firstInterval = PlanInterval::make(PlanInterval::$MONTH, 1, 4.90);
+        $firstInterval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
         $otherPlan->addInterval($firstInterval);
 
-        $secondInterval = PlanInterval::make(PlanInterval::$YEAR, 1, 49.90);
+        $secondInterval = PlanInterval::make(PlanInterval::YEAR, 1, 49.90);
         $otherPlan->addInterval($secondInterval);
 
         $this->assertDatabaseHas($intervalsTable, $firstInterval->toArray());
