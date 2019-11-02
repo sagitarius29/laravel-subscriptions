@@ -16,7 +16,7 @@ interface PlanIntervalContract
 
     public function getPrice(): float;
 
-    public function getType(): string;
+    public function getType(): ?string;
 
     public function getUnit(): int;
 

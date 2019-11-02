@@ -34,8 +34,8 @@ class CreateSubscriptionsTables extends Migration
             $table->increments('id');
             $table->integer('plan_id')->unsigned();
             $table->decimal('price');
-            $table->enum('interval', ['day', 'month', 'year'])->nullable();
-            $table->integer('interval_unit')->nullable();
+            $table->enum('type', ['day', 'month', 'year'])->nullable();
+            $table->integer('unit')->nullable();
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');

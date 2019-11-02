@@ -8,7 +8,7 @@
 
 A simple laravel package for Subscriptions.
 
-All ideas are welcome, please send your issue in: [Send Your Issue or Questions](https://github.com/sagitarius29/laravel-subscriptions/issues)
+All ideas are welcome, please send your issue in: [Send your issues in here](https://github.com/sagitarius29/laravel-subscriptions/issues/new)
 
 ## Installation
 
@@ -71,10 +71,10 @@ use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 
 $plan = Plan::create(
-        'name of plan',
-        'this is a description',
-        0,
-        1
+        'name of plan', //name
+        'this is a description', //description
+        0, // free days
+        1 // sort order
     );
 $features = [
     PlanFeature::make('listings', 50, 1),
@@ -96,7 +96,7 @@ $plan->isFree(); // return false;
 $plan->isNotFree(); // return true; 
 ```
 
-### User is subscribing to a Plan
+### An user can subscribe to a plan
 ```php
 <?php
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
@@ -125,7 +125,7 @@ $secondPlan = Plan::find(2);
 $user->changePlanTo($secondPlan);
 ````
 
-### User cancel subscription
+### Unsubscribe
 ````php
 <?php
 $user = \Auth::user();
