@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
+use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
 
 abstract class Plan extends Model implements PlanContract
 {
@@ -171,4 +172,13 @@ abstract class Plan extends Model implements PlanContract
     {
         return $this->description;
     }
+
+    public function delete()
+    {
+        if($this->subscriptions()->count() > 0) {
+            throw new PlanErrorException('You cannot delete this plan because this has subscriptions.');
+        }
+        return parent::delete();
+    }
+
 }

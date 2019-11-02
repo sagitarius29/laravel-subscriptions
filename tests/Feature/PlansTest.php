@@ -5,6 +5,8 @@ namespace Orchestra\Testbench\Tests\Databases;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
@@ -194,12 +196,7 @@ class PlansTest extends TestCase
     /** @test */
     public function it_can_delete_a_plan()
     {
-        $plan = Plan::create(
-            'name of plan',
-            'this is a description',
-            0,
-            1
-        );
+        $plan = factory(Plan::class)->create();
 
         $plan->setInterval(
             PlanInterval::make(PlanInterval::MONTH, 1, 10.50)
@@ -210,5 +207,18 @@ class PlansTest extends TestCase
         $plan->delete();
 
         $this->assertDatabaseMissing($plan->getTable(), $plan->toArray());
+    }
+
+    /** @test */
+    public function error_deleting_a_plan_with_subscriptions()
+    {
+        $this->expectException(PlanErrorException::class);
+
+        $plan = factory(Plan::class)->create();
+        $user = factory(User::class)->create();
+
+        $user->subscribeToPlan($plan);
+
+        $plan->delete();
     }
 }
