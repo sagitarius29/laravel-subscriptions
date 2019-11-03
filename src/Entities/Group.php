@@ -56,7 +56,7 @@ class Group implements GroupContract
         return $this->code;
     }
 
-    public function getActivePlans()
+    public function getEnabledPlans()
     {
         return $this->modelPlan::query()
             ->byGroup($this)

@@ -89,7 +89,7 @@ class GroupPlanTest extends TestCase
 
         $this->assertCount(3, $allPlans);
 
-        $allActivePlans = $firstGroup->getActivePlans();
+        $allActivePlans = $firstGroup->getEnabledPlans();
 
         $this->assertCount(2, $allActivePlans);
     }

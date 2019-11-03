@@ -10,9 +10,11 @@ interface GroupContract
 
     public function addPlan(PlanContract $plan): void;
 
+    public function addPlans(array $plans): void;
+
     public function getDefaultPlan(): ?PlanContract;
 
-    public function addPlans(array $plans): void;
+    public function getEnabledPlans();
 
     public function hasPlans(): bool;
 
