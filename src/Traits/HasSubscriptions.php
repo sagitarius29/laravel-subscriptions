@@ -40,6 +40,10 @@ trait HasSubscriptions
             );
         }
 
+        if ($this->subscriptions()->unfinished()->count() >= 2) {
+            throw new SubscriptionErrorException('You are changed to other plan previously');
+        }
+
         if ($plan->hasManyIntervals()) {
             throw new SubscriptionErrorException(
                 'This plan has many intervals, please use subscribeToInterval() function'
@@ -110,6 +114,10 @@ trait HasSubscriptions
             );
         }
 
+        if ($this->subscriptions()->unfinished()->count() >= 2) {
+            throw new SubscriptionErrorException('You are changed to other plan previously');
+        }
+
         $currentSubscription = $this->getActiveSubscription();
         $start_at = null;
         $end_at = null;
@@ -136,6 +144,10 @@ trait HasSubscriptions
 
         if ($plan->hasManyIntervals() && $interval == null) {
             throw new SubscriptionErrorException('The plan has many intervals, please indicate a interval.');
+        }
+
+        if ($this->subscriptions()->unfinished()->count() >= 2) {
+            throw new SubscriptionErrorException('You are changed to other plan previously');
         }
 
         $currentSubscription = $this->getActiveSubscription();
@@ -196,6 +208,10 @@ trait HasSubscriptions
 
     public function renewSubscription(PlanIntervalContract $interval = null)
     {
+        if ($this->subscriptions()->unfinished()->count() >= 2) {
+            throw new SubscriptionErrorException('You are changed to other plan previously');
+        }
+
         $currentSubscription = $this->getActiveSubscription();
 
         if ($interval === null) {

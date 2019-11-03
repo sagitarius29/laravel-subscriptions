@@ -37,12 +37,21 @@ class Subscription extends Model implements SubscriptionContact
 
     public function scopeCurrent(Builder $q)
     {
-        $date = now();
+        $today = now();
 
-        return $q->where('start_at', '<=', $date)
-            ->where(function ($query) use ($date) {
-                $query->where('end_at', '>=', $date)->orWhereNull('end_at');
+        return $q->where('start_at', '<=', $today)
+            ->where(function ($query) use ($today) {
+                $query->where('end_at', '>=', $today)->orWhereNull('end_at');
             });
+    }
+
+    public function scopeUnfinished(Builder $q)
+    {
+        $today = now();
+
+        return $q->where(function ($query) use ($today) {
+            $query->where('end_at', '>=', $today)->orWhereNull('end_at');
+        });
     }
 
     public function getDaysLeft(): ?int

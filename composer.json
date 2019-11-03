@@ -2,8 +2,14 @@
     "name": "sagitarius29/laravel-subscriptions",
     "description": "A simple package for subscriptions",
     "keywords": [
+        "laravel",
         "sagitarius29",
-        "laravel-subscriptions"
+        "laravel-subscriptions",
+        "subscription",
+        "intervals",
+        "plan",
+        "features",
+        "recurring"
     ],
     "homepage": "https://github.com/sagitarius29/laravel-subscriptions",
     "license": "MIT",

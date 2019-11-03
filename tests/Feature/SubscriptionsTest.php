@@ -194,6 +194,33 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
+    public function an_user_change_plan_after_renew_subscription()
+    {
+        $dayOfObtainPlan = $this->now;
+        Carbon::setTestNow($dayOfObtainPlan);
+
+        $user = factory(User::class)->create();
+        $firstPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $firstPlan->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 100));
+
+        $secondPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $secondPlan->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 50));
+
+        $user->subscribeTo($firstPlan);
+        $subscription = $user->renewSubscription();
+
+        $this->assertEquals(now()->addMonths(2), $subscription->refresh()->getExpirationDate());
+
+        $subscriptionChanged = $user->changePlanTo($secondPlan);
+
+        $this->assertEquals(now()->addMonths(3), $subscriptionChanged->refresh()->getExpirationDate());
+
+        $this->expectException(SubscriptionErrorException::class);
+
+        $user->renewSubscription();
+    }
+
+    /** @test */
     public function user_can_change_plan()
     {
         Carbon::setTestNow($this->now);
