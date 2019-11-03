@@ -78,9 +78,9 @@ class GroupPlanTest extends TestCase
         $firstGroup = new Group('first_group');
 
         $plans = [
-            factory(Plan::class)->create(),
-            factory(Plan::class)->create(),
-            factory(Plan::class)->create(),
+            factory(Plan::class)->create(['is_active' => true]),
+            factory(Plan::class)->create(['is_active' => true]),
+            factory(Plan::class)->create(['is_active' => false]),
         ];
 
         $firstGroup->addPlans($plans);
@@ -88,6 +88,10 @@ class GroupPlanTest extends TestCase
         $allPlans = $firstGroup->plans()->get();
 
         $this->assertCount(3, $allPlans);
+
+        $allActivePlans = $firstGroup->getActivePlans();
+
+        $this->assertCount(2, $allActivePlans);
     }
 
     /** @test */

@@ -36,7 +36,9 @@ class Group implements GroupContract
 
     public function plans(): Builder
     {
-        return $this->modelPlan::query()->byGroup($this);
+        return $this->modelPlan::query()
+            ->byGroup($this)
+            ->orderBy('sort_order');
     }
 
     public function getDefaultPlan(): ?PlanContract
@@ -52,5 +54,14 @@ class Group implements GroupContract
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getActivePlans()
+    {
+        return $this->modelPlan::query()
+            ->byGroup($this)
+            ->actives()
+            ->orderBy('sort_order')
+            ->get();
     }
 }

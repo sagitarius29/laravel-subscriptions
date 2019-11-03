@@ -77,6 +77,16 @@ abstract class Plan extends Model implements PlanContract
         return $q->where('is_default', 1);
     }
 
+    public function scopeActives(Builder $q)
+    {
+        return $q->where('is_active', 1);
+    }
+
+    public function scopeInactivates(Builder $q)
+    {
+        return $q->where('is_active', 1);
+    }
+
     public function subscriptions()
     {
         return $this->hasMany(config('subscriptions.entities.plan_subscription'));
