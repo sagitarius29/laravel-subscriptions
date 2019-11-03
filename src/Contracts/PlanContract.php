@@ -30,11 +30,13 @@ interface PlanContract
 
     public function addFeature(PlanFeatureContract $feature);
 
+    public function addFeatures(array $feature);
+
     public function intervals();
 
     public function isDefault(): bool;
 
-    public function isActive(): bool;
+    public function isEnabled(): bool;
 
     public function isFree(): bool;
 

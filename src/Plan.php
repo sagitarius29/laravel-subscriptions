@@ -14,7 +14,7 @@ abstract class Plan extends Model implements PlanContract
     protected $table = 'plans';
 
     protected $fillable = [
-        'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default', 'group',
+        'name', 'description', 'free_days', 'sort_order', 'is_enabled', 'is_default', 'group',
     ];
 
     /**
@@ -22,7 +22,7 @@ abstract class Plan extends Model implements PlanContract
      * @param  string  $description
      * @param  int  $free_days
      * @param  int  $sort_order
-     * @param  bool  $is_active
+     * @param  bool  $is_enabled
      * @param  bool  $is_default
      * @param  GroupContract|null  $group
      * @return Model|PlanContract
@@ -32,7 +32,7 @@ abstract class Plan extends Model implements PlanContract
         string $description,
         int $free_days,
         int $sort_order,
-        bool $is_active = false,
+        bool $is_enabled = false,
         bool $is_default = false,
         GroupContract $group = null
     ): PlanContract {
@@ -41,7 +41,7 @@ abstract class Plan extends Model implements PlanContract
             'description' => $description,
             'free_days' => $free_days,
             'sort_order' => $sort_order,
-            'is_active' => $is_active,
+            'is_enabled' => $is_enabled,
             'is_default' => $is_default,
             'group' => $group,
         ];
@@ -77,14 +77,14 @@ abstract class Plan extends Model implements PlanContract
         return $q->where('is_default', 1);
     }
 
-    public function scopeActives(Builder $q)
+    public function scopeEnabled(Builder $q)
     {
-        return $q->where('is_active', 1);
+        return $q->where('is_enabled', 1);
     }
 
-    public function scopeInactivates(Builder $q)
+    public function scopeDisabled(Builder $q)
     {
-        return $q->where('is_active', 1);
+        return $q->where('is_enabled', 1);
     }
 
     public function subscriptions()
@@ -97,6 +97,11 @@ abstract class Plan extends Model implements PlanContract
         $this->features()->save($feature);
     }
 
+    public function addFeatures(array $features)
+    {
+        $this->features()->saveMany($features);
+    }
+
     public function features()
     {
         return $this->hasMany(config('subscriptions.entities.plan_feature'));
@@ -107,9 +112,14 @@ abstract class Plan extends Model implements PlanContract
         return $this->is_default;
     }
 
-    public function isActive(): bool
+    public function isEnabled(): bool
     {
-        return $this->is_active;
+        return $this->is_enabled;
+    }
+
+    public function isDisabled(): bool
+    {
+        return ! $this->is_enabled;
     }
 
     public function isFree(): bool

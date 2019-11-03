@@ -44,7 +44,7 @@ class PlansTest extends TestCase
         $this->assertTrue($plan->subscriptions()->count() == 0);
 
         // it's for default any plans are inactive
-        $this->assertFalse($plan->isActive());
+        $this->assertFalse($plan->isEnabled());
 
         // it's is free
         $this->assertTrue($plan->isFree());
@@ -74,7 +74,7 @@ class PlansTest extends TestCase
         ];
 
         // adding features to plan
-        $plan->features()->saveMany($features);
+        $plan->addFeatures($features);
 
         foreach ($features as $feature) {
             $this->assertDatabaseHas((new PlanFeature())->getTable(), $feature->toArray());
@@ -179,10 +179,10 @@ class PlansTest extends TestCase
             1
         );
 
-        $firstInterval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
+        $firstInterval = PlanInterval::make(PlanInterval::MONTH, 1, 8.90);
         $otherPlan->addInterval($firstInterval);
 
-        $secondInterval = PlanInterval::make(PlanInterval::YEAR, 1, 49.90);
+        $secondInterval = PlanInterval::make(PlanInterval::YEAR, 1, 99.90);
         $otherPlan->addInterval($secondInterval);
 
         $this->assertDatabaseHas($intervalsTable, $firstInterval->toArray());

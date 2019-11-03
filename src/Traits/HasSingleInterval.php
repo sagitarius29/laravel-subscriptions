@@ -7,20 +7,18 @@ use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 
 trait HasSingleInterval
 {
-    public function setInterval(Model $interval): self
+    public function setInterval(Model $interval): PlanIntervalContract
     {
         $intervalLoaded = $this->getInterval();
 
         if ($intervalLoaded == null) {
-            $this->intervals()->save($interval);
-
-            return $this;
+            return $this->intervals()->save($interval);
         }
 
         $intervalLoaded->fill($interval->toArray());
         $intervalLoaded->save();
 
-        return $this;
+        return $intervalLoaded;
     }
 
     public function getInterval(): ?PlanIntervalContract

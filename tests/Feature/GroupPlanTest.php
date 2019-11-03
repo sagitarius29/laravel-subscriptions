@@ -78,9 +78,9 @@ class GroupPlanTest extends TestCase
         $firstGroup = new Group('first_group');
 
         $plans = [
-            factory(Plan::class)->create(['is_active' => true]),
-            factory(Plan::class)->create(['is_active' => true]),
-            factory(Plan::class)->create(['is_active' => false]),
+            factory(Plan::class)->create(['is_enabled' => true]),
+            factory(Plan::class)->create(['is_enabled' => true]),
+            factory(Plan::class)->create(['is_enabled' => false]),
         ];
 
         $firstGroup->addPlans($plans);

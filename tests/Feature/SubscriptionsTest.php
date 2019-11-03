@@ -5,6 +5,7 @@ namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
@@ -24,12 +25,34 @@ class SubscriptionsTest extends TestCase
     }
 
     /** @test */
+    public function a_user_want_to_subscribe_to_a_disabled_plan()
+    {
+        $user = factory(User::class)->create();
+        $plan = factory(Plan::class)->create(['is_enabled' => false]);
+
+        $this->expectException(SubscriptionErrorException::class);
+        $user->subscribeTo($plan);
+    }
+
+    /** @test */
+    public function a_user_want_to_subscribe_to_a_interval_of_a_disabled_plan()
+    {
+        $user = factory(User::class)->create();
+        $plan = factory(Plan::class)->create(['is_enabled' => false]);
+        $interval = $plan->setInterval(PlanInterval::make(PlanInterval::MONTH, 3, 90));
+
+        $this->expectException(SubscriptionErrorException::class);
+
+        $user->subscribeToInterval($interval);
+    }
+
+    /** @test */
     public function a_user_can_subscribe_to_a_perpetual_plan()
     {
         Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
-        $plan = factory(Plan::class)->create();
+        $plan = factory(Plan::class)->create(['is_enabled' => true]);
 
         $subscription = $user->subscribeTo($plan);
 
@@ -72,7 +95,7 @@ class SubscriptionsTest extends TestCase
         Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
-        $plan = factory(Plan::class)->create();
+        $plan = factory(Plan::class)->create(['is_enabled' => true]);
 
         //when plan has one interval
         $interval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
@@ -111,7 +134,8 @@ class SubscriptionsTest extends TestCase
             'name of plan',
             'this is a description',
             0,
-            1
+            1,
+            true
         );
 
         $intervals = [
@@ -141,7 +165,7 @@ class SubscriptionsTest extends TestCase
         Carbon::setTestNow($dayOfObtainPlan);
 
         $user = factory(User::class)->create();
-        $plan = factory(Plan::class)->create();
+        $plan = factory(Plan::class)->create(['is_enabled' => true]);
 
         $interval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
         $plan->setInterval($interval);
@@ -175,11 +199,13 @@ class SubscriptionsTest extends TestCase
         Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
-        $freePlan = factory(Plan::class)->create();
-        $firstPlan = factory(Plan::class)->create()
-            ->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 4.90));
-        $secondPlan = factory(Plan::class)->create()
-            ->setInterval(PlanInterval::make(PlanInterval::YEAR, 1, 39.00));
+        $freePlan = factory(Plan::class)->create(['is_enabled' => true]);
+
+        $firstPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $firstPlan->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 4.90));
+
+        $secondPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $secondPlan->setInterval(PlanInterval::make(PlanInterval::YEAR, 1, 39.00));
 
         $this->assertNotTrue($user->hasActiveSubscription());
 
@@ -216,9 +242,9 @@ class SubscriptionsTest extends TestCase
         Carbon::setTestNow($this->now);
 
         $user = factory(User::class)->create();
-        $freePlan = factory(Plan::class)->create();
-        $firstPlan = factory(Plan::class)->create()
-            ->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 4.90));
+        $freePlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $firstPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $firstPlan->setInterval(PlanInterval::make(PlanInterval::MONTH, 1, 4.90));
 
         $this->assertNotTrue($user->hasActiveSubscription());
         $user->subscribeToPlan($freePlan);

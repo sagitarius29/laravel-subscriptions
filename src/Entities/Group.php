@@ -60,7 +60,7 @@ class Group implements GroupContract
     {
         return $this->modelPlan::query()
             ->byGroup($this)
-            ->actives()
+            ->enabled()
             ->orderBy('sort_order')
             ->get();
     }

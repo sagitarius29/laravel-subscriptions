@@ -34,6 +34,12 @@ trait HasSubscriptions
      */
     public function subscribeToPlan(PlanContract $plan): SubscriptionContact
     {
+        if($plan->isDisabled()) {
+            throw new SubscriptionErrorException(
+                'This plan has been disabled, please subscribe to other plan.'
+            );
+        }
+
         if ($plan->hasManyIntervals()) {
             throw new SubscriptionErrorException(
                 'This plan has many intervals, please use subscribeToInterval() function'
@@ -98,6 +104,12 @@ trait HasSubscriptions
 
     public function subscribeToInterval(PlanIntervalContract $interval): SubscriptionContact
     {
+        if($interval->plan->isDisabled()) {
+            throw new SubscriptionErrorException(
+                'This plan has been disabled, please subscribe to other plan.'
+            );
+        }
+
         $currentSubscription = $this->getActiveSubscription();
         $start_at = null;
         $end_at = null;

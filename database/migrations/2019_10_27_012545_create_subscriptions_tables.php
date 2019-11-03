@@ -22,7 +22,7 @@ class CreateSubscriptionsTables extends Migration
             $table->string('group', 100)->nullable();
             $table->integer('free_days')->default(0);
             $table->tinyInteger('sort_order');
-            $table->boolean('is_active')->default(0);
+            $table->boolean('is_enabled')->default(0);
             $table->boolean('is_default')->default(0);
 
             $table->timestamps();
