@@ -39,12 +39,12 @@ abstract class Plan extends Model implements PlanContract
         GroupContract $group = null
     ): PlanContract {
         $attributes = [
-            'name' => $name,
+            'name'        => $name,
             'description' => $description,
-            'sort_order' => $sort_order,
-            'is_enabled' => $is_enabled,
-            'is_default' => $is_default,
-            'group' => $group,
+            'sort_order'  => $sort_order,
+            'is_enabled'  => $is_enabled,
+            'is_default'  => $is_default,
+            'group'       => $group,
         ];
         $calledClass = get_called_class();
 
@@ -186,5 +186,4 @@ abstract class Plan extends Model implements PlanContract
     {
         return $this->hasMany(config('subscriptions.entities.plan_subscription'));
     }
-
 }
