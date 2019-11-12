@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSubscriptionsTables extends Migration
 {
@@ -75,7 +75,6 @@ class CreateSubscriptionsTables extends Migration
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
-
         });
 
         Schema::create('subscription_consumables', function (Blueprint $table) {

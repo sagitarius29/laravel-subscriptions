@@ -6,12 +6,12 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
-use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
-use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
+use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
 use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
+use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 
 class SubscriptionsTest extends TestCase
 {

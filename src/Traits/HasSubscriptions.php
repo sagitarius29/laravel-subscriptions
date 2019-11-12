@@ -5,11 +5,11 @@ namespace Sagitarius29\LaravelSubscriptions\Traits;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 use Sagitarius29\LaravelSubscriptions\Entities\Subscription;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
-use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
 use Sagitarius29\LaravelSubscriptions\PlanFeature;
 
@@ -196,9 +196,11 @@ trait HasSubscriptions
     public function forceUnsubscribe()
     {
         $currentSubscription = $this->getActiveSubscription();
-        $currentSubscription->end_at = now()->subSecond();
-        $currentSubscription->cancelled_at = now();
-        $currentSubscription->save();
+        if ($currentSubscription != null) {
+            $currentSubscription->end_at = now()->subSecond();
+            $currentSubscription->cancelled_at = now();
+            $currentSubscription->save();
+        }
     }
 
     protected function downgradeTo(PlanIntervalContract $interval): SubscriptionContact
@@ -290,6 +292,6 @@ trait HasSubscriptions
 
     public function getConsumables()
     {
-
+        //TODO
     }
 }

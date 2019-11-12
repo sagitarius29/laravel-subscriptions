@@ -3,8 +3,8 @@
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;

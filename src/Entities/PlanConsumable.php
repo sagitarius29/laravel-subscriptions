@@ -8,7 +8,7 @@ use Sagitarius29\LaravelSubscriptions\PlanFeature as PlanFeatureBase;
 class PlanConsumable extends PlanFeatureBase
 {
     protected $attributes = [
-        'is_consumable' => true
+        'is_consumable' => true,
     ];
 
     public static function make(

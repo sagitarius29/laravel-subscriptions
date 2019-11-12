@@ -2,17 +2,17 @@
 
 namespace Orchestra\Testbench\Tests\Databases;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
-use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
+use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
+use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Traits\HasManyIntervals;
 use Sagitarius29\LaravelSubscriptions\Traits\HasSingleInterval;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
 
 class PlansTest extends TestCase
 {
@@ -210,7 +210,7 @@ class PlansTest extends TestCase
         $this->expectException(PlanErrorException::class);
 
         $plan = factory(Plan::class)->create([
-            'is_enabled' => true
+            'is_enabled' => true,
         ]);
         $user = factory(User::class)->create();
 

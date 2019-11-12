@@ -29,6 +29,4 @@ class PlanFeature extends PlanFeatureBase
 
         return new self($attributes);
     }
-
-
 }

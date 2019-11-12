@@ -5,8 +5,8 @@ namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanConsumable;
-use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
+use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 
 class PlanFeatureTest extends TestCase
 {

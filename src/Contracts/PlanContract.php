@@ -23,7 +23,7 @@ interface PlanContract
         bool $is_active = false,
         bool $is_default = false,
         GroupContract $group = null
-    ): PlanContract;
+    ): self;
 
     public function intervals();
 

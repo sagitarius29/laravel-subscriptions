@@ -2,10 +2,10 @@
 
 namespace Sagitarius29\LaravelSubscriptions;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Entities\Group;
 use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
 use Sagitarius29\LaravelSubscriptions\Traits\HasFeatures;
@@ -86,11 +86,6 @@ abstract class Plan extends Model implements PlanContract
     public function scopeDisabled(Builder $q)
     {
         return $q->where('is_enabled', 1);
-    }
-
-    public function subscriptions()
-    {
-        return $this->hasMany(config('subscriptions.entities.plan_subscription'));
     }
 
     public function isDefault(): bool
@@ -181,10 +176,15 @@ abstract class Plan extends Model implements PlanContract
 
     public function delete()
     {
-        if($this->subscriptions()->exists() > 0) {
+        if ($this->subscriptions()->exists() > 0) {
             throw new PlanErrorException('You cannot delete this plan because this has subscriptions.');
         }
         return parent::delete();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(config('subscriptions.entities.plan_subscription'));
     }
 
 }
