@@ -14,6 +14,8 @@ All ideas are welcome, please send your issue in: [Send your issues in here](htt
 
 You can install the package via composer:
 
+**This package work in laravel 5.8 or later because Carbon is updated to 2.0.**
+
 ```bash
 composer require sagitarius29/laravel-subscriptions
 ```
