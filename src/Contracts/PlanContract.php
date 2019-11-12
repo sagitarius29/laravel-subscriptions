@@ -6,25 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 interface PlanContract
 {
+    /**
+     * @param  string  $name
+     * @param  string  $description
+     * @param  int  $free_days
+     * @param  int  $sort_order
+     * @param  bool  $is_active
+     * @param  bool  $is_default
+     * @param  GroupContract|null  $group
+     * @return Model|PlanContract
+     */
     public static function create(
         string $name,
         string $description,
-        int $free_days,
         int $sort_order,
         bool $is_active = false,
         bool $is_default = false,
         GroupContract $group = null
-    ): Model;
-
-    public function features();
-
-    public function addFeature(PlanFeatureContract $feature);
+    ): self;
 
     public function intervals();
 
     public function isDefault(): bool;
 
-    public function isActive(): bool;
+    public function isEnabled(): bool;
 
     public function isFree(): bool;
 

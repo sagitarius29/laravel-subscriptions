@@ -10,7 +10,7 @@ class PlanInterval extends Model implements PlanIntervalContract
 {
     protected $table = 'plan_intervals';
     protected $fillable = [
-        'price', 'interval', 'interval_unit',
+        'price', 'type', 'unit',
     ];
 
     public static function make($type, int $unit, float $price): PlanIntervalContract
@@ -19,8 +19,8 @@ class PlanInterval extends Model implements PlanIntervalContract
 
         $attributes = [
             'price' => $price,
-            'interval' => $type,
-            'interval_unit' => $unit,
+            'type' => $type,
+            'unit' => $unit,
         ];
 
         return new self($attributes);
@@ -50,19 +50,19 @@ class PlanInterval extends Model implements PlanIntervalContract
         return $this->belongsTo(config('subscriptions.entities.plan'));
     }
 
-    public function getType(): string
-    {
-        return $this->interval;
-    }
-
     public function getUnit(): int
     {
-        return $this->interval_unit;
+        return $this->unit;
     }
 
     public function isInfinite(): bool
     {
-        return $this->interval == null;
+        return $this->getType() == null;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
     }
 
     public function isFree(): bool

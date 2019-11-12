@@ -2,8 +2,14 @@
     "name": "sagitarius29/laravel-subscriptions",
     "description": "A simple package for subscriptions",
     "keywords": [
+        "laravel",
         "sagitarius29",
-        "laravel-subscriptions"
+        "laravel-subscriptions",
+        "subscription",
+        "intervals",
+        "plan",
+        "features",
+        "recurring"
     ],
     "homepage": "https://github.com/sagitarius29/laravel-subscriptions",
     "license": "MIT",
@@ -17,11 +23,11 @@
     ],
     "require": {
         "php": "^7.1",
-        "illuminate/support": "5.7.*"
+        "illuminate/support": "5.8.*"
     },
     "require-dev": {
         "mockery/mockery": "^1.2",
-        "orchestra/testbench": "3.7.*",
+        "orchestra/testbench": "3.8.*",
         "phpunit/phpunit": "^7.0"
     },
     "autoload": {

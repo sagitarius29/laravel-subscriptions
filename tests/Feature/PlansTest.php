@@ -2,15 +2,17 @@
 
 namespace Orchestra\Testbench\Tests\Databases;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\WithFaker;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
-use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
+use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
+use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
+use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Traits\HasManyIntervals;
 use Sagitarius29\LaravelSubscriptions\Traits\HasSingleInterval;
-use Sagitarius29\LaravelSubscriptions\Tests\Entities\PlanManyIntervals;
 
 class PlansTest extends TestCase
 {
@@ -22,7 +24,6 @@ class PlansTest extends TestCase
         $attributes = [
             'name'          => 'Plan One',
             'description'   => $this->faker->sentence,
-            'free_days'     => 0,
             'sort_order'    => 1,
         ];
 
@@ -30,7 +31,6 @@ class PlansTest extends TestCase
         $plan = Plan::create(
             $attributes['name'],
             $attributes['description'],
-            $attributes['free_days'],
             $attributes['sort_order']
         );
 
@@ -42,7 +42,7 @@ class PlansTest extends TestCase
         $this->assertTrue($plan->subscriptions()->count() == 0);
 
         // it's for default any plans are inactive
-        $this->assertFalse($plan->isActive());
+        $this->assertFalse($plan->isEnabled());
 
         // it's is free
         $this->assertTrue($plan->isFree());
@@ -65,14 +65,14 @@ class PlansTest extends TestCase
         );
 
         $features = [
-            PlanFeature::make('listings', 50, 1, true),
-            PlanFeature::make('pictures_per_listing', 10, 1, true),
-            PlanFeature::make('listing_duration_days', 30, 1, true),
+            PlanFeature::make('listings', 50, 1),
+            PlanFeature::make('pictures_per_listing', 10, 1),
+            PlanFeature::make('listing_duration_days', 30, 1),
             PlanFeature::make('listing_title_bold', true, 1),
         ];
 
         // adding features to plan
-        $plan->features()->saveMany($features);
+        $plan->addFeatures($features);
 
         foreach ($features as $feature) {
             $this->assertDatabaseHas((new PlanFeature())->getTable(), $feature->toArray());
@@ -87,7 +87,6 @@ class PlansTest extends TestCase
         $plan = Plan::create(
             'name of plan',
             'this is a description',
-            0,
             1
         );
 
@@ -144,7 +143,6 @@ class PlansTest extends TestCase
         $plan = PlanManyIntervals::create(
             'name of plan',
             'this is a description',
-            0,
             1
         );
 
@@ -173,14 +171,13 @@ class PlansTest extends TestCase
         $otherPlan = PlanManyIntervals::create(
             'other name of plan',
             'this is a description',
-            0,
             1
         );
 
-        $firstInterval = PlanInterval::make(PlanInterval::MONTH, 1, 4.90);
+        $firstInterval = PlanInterval::make(PlanInterval::MONTH, 1, 8.90);
         $otherPlan->addInterval($firstInterval);
 
-        $secondInterval = PlanInterval::make(PlanInterval::YEAR, 1, 49.90);
+        $secondInterval = PlanInterval::make(PlanInterval::YEAR, 1, 99.90);
         $otherPlan->addInterval($secondInterval);
 
         $this->assertDatabaseHas($intervalsTable, $firstInterval->toArray());
@@ -189,5 +186,36 @@ class PlansTest extends TestCase
         $this->assertTrue($otherPlan->isNotFree());
         $this->assertTrue($otherPlan->hasManyIntervals());
         $this->assertNotTrue($otherPlan->isDefault());
+    }
+
+    /** @test */
+    public function it_can_delete_a_plan()
+    {
+        $plan = factory(Plan::class)->create();
+
+        $plan->setInterval(
+            PlanInterval::make(PlanInterval::MONTH, 1, 10.50)
+        );
+
+        $this->assertDatabaseHas($plan->getTable(), $plan->toArray());
+
+        $plan->delete();
+
+        $this->assertDatabaseMissing($plan->getTable(), $plan->toArray());
+    }
+
+    /** @test */
+    public function error_deleting_a_plan_with_subscriptions()
+    {
+        $this->expectException(PlanErrorException::class);
+
+        $plan = factory(Plan::class)->create([
+            'is_enabled' => true,
+        ]);
+        $user = factory(User::class)->create();
+
+        $user->subscribeToPlan($plan);
+
+        $plan->delete();
     }
 }

@@ -2,37 +2,49 @@
 
 namespace Sagitarius29\LaravelSubscriptions;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Illuminate\Database\Eloquent\Model;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
+use Sagitarius29\LaravelSubscriptions\Entities\Group;
+use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
+use Sagitarius29\LaravelSubscriptions\Traits\HasFeatures;
 
 abstract class Plan extends Model implements PlanContract
 {
+    use HasFeatures;
+
     protected $table = 'plans';
 
     protected $fillable = [
-        'name', 'description', 'free_days', 'sort_order', 'is_active', 'is_default', 'group',
+        'name', 'description', 'free_days', 'sort_order', 'is_enabled', 'is_default', 'group',
     ];
 
+    /**
+     * @param  string  $name
+     * @param  string  $description
+     * @param  int  $free_days
+     * @param  int  $sort_order
+     * @param  bool  $is_enabled
+     * @param  bool  $is_default
+     * @param  GroupContract|null  $group
+     * @return Model|PlanContract
+     */
     public static function create(
         string $name,
         string $description,
-        int $free_days,
         int $sort_order,
-        bool $is_active = false,
+        bool $is_enabled = false,
         bool $is_default = false,
         GroupContract $group = null
-    ): Model {
+    ): PlanContract {
         $attributes = [
-            'name' => $name,
+            'name'        => $name,
             'description' => $description,
-            'free_days' => $free_days,
-            'sort_order' => $sort_order,
-            'is_active' => $is_active,
-            'is_default' => $is_default,
-            'group' => $group,
+            'sort_order'  => $sort_order,
+            'is_enabled'  => $is_enabled,
+            'is_default'  => $is_default,
+            'group'       => $group,
         ];
         $calledClass = get_called_class();
 
@@ -66,19 +78,14 @@ abstract class Plan extends Model implements PlanContract
         return $q->where('is_default', 1);
     }
 
-    public function subscriptions()
+    public function scopeEnabled(Builder $q)
     {
-        return $this->hasMany(config('subscriptions.entities.plan_subscription'));
+        return $q->where('is_enabled', 1);
     }
 
-    public function addFeature(PlanFeatureContract $feature)
+    public function scopeDisabled(Builder $q)
     {
-        $this->features()->save($feature);
-    }
-
-    public function features()
-    {
-        return $this->hasMany(config('subscriptions.entities.plan_feature'));
+        return $q->where('is_enabled', 1);
     }
 
     public function isDefault(): bool
@@ -86,9 +93,14 @@ abstract class Plan extends Model implements PlanContract
         return $this->is_default;
     }
 
-    public function isActive(): bool
+    public function isEnabled(): bool
     {
-        return $this->is_active;
+        return $this->is_enabled;
+    }
+
+    public function isDisabled(): bool
+    {
+        return ! $this->is_enabled;
     }
 
     public function isFree(): bool
@@ -138,7 +150,7 @@ abstract class Plan extends Model implements PlanContract
 
     public function myGroup(): ?GroupContract
     {
-        return empty($this->group) ? null : new \Sagitarius29\LaravelSubscriptions\Entities\Group($this->group);
+        return empty($this->group) ? null : new Group($this->group);
     }
 
     public function changeToGroup(GroupContract $group): void
@@ -150,5 +162,29 @@ abstract class Plan extends Model implements PlanContract
         }
 
         $this->save();
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function delete()
+    {
+        if ($this->subscriptions()->exists() > 0) {
+            throw new PlanErrorException('You cannot delete this plan because this has subscriptions.');
+        }
+
+        return parent::delete();
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(config('subscriptions.entities.plan_subscription'));
     }
 }

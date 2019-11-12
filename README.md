@@ -8,11 +8,13 @@
 
 A simple laravel package for Subscriptions.
 
-All ideas are welcome, please send your issue in: [Send Your Issue or Questions](https://github.com/sagitarius29/laravel-subscriptions/issues)
+All ideas are welcome, please send your issue in: [Send your issues in here](https://github.com/sagitarius29/laravel-subscriptions/issues/new)
 
 ## Installation
 
 You can install the package via composer:
+
+**This package work in laravel 5.8 or later because Carbon is updated to 2.0.**
 
 ```bash
 composer require sagitarius29/laravel-subscriptions
@@ -68,19 +70,20 @@ class User extends Authenticable
 <?php
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
+use \Sagitarius29\LaravelSubscriptions\Entities\PlanConsumable;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 
 $plan = Plan::create(
-        'name of plan',
-        'this is a description',
-        0,
-        1
+        'name of plan', //name
+        'this is a description', //description
+        1 // sort order
     );
 $features = [
-    PlanFeature::make('listings', 50, 1),
-    PlanFeature::make('pictures_per_listing', 10, 1),
-    PlanFeature::make('listing_duration_days', 30, 1),
-    PlanFeature::make('listing_title_bold', true, 1),
+    PlanFeature::make('listings', 50),
+    PlanFeature::make('pictures_per_listing', 10),
+    PlanFeature::make('listing_duration_days', 30),
+    PlanFeature::make('listing_title_bold', true),
+    PlanConsumable::make('number_of_contacts', 10),
 ];
 
 // adding features to plan
@@ -96,7 +99,7 @@ $plan->isFree(); // return false;
 $plan->isNotFree(); // return true; 
 ```
 
-### User is subscribing to a Plan
+### An user can subscribe to a plan
 ```php
 <?php
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
@@ -125,7 +128,7 @@ $secondPlan = Plan::find(2);
 $user->changePlanTo($secondPlan);
 ````
 
-### User cancel subscription
+### Unsubscribe
 ````php
 <?php
 $user = \Auth::user();

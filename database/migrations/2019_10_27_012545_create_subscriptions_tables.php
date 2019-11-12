@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateSubscriptionsTables extends Migration
 {
@@ -22,7 +22,7 @@ class CreateSubscriptionsTables extends Migration
             $table->string('group', 100)->nullable();
             $table->integer('free_days')->default(0);
             $table->tinyInteger('sort_order');
-            $table->boolean('is_active')->default(0);
+            $table->boolean('is_enabled')->default(0);
             $table->boolean('is_default')->default(0);
 
             $table->timestamps();
@@ -34,11 +34,12 @@ class CreateSubscriptionsTables extends Migration
             $table->increments('id');
             $table->integer('plan_id')->unsigned();
             $table->decimal('price');
-            $table->enum('interval', ['day', 'month', 'year'])->nullable();
-            $table->integer('interval_unit')->nullable();
+            $table->enum('type', ['day', 'month', 'year'])->nullable();
+            $table->integer('unit')->nullable();
 
             $table->foreign('plan_id')
-                ->references('id')->on('plans');
+                ->references('id')->on('plans')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -50,11 +51,12 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('plan_id')->unsigned();
             $table->string('code', 100);
             $table->integer('value')->default(0);
-            $table->integer('sort_order');
+            $table->integer('sort_order')->nullable();
             $table->boolean('is_consumable')->default(0);
 
             $table->foreign('plan_id')
-                ->references('id')->on('plans');
+                ->references('id')->on('plans')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -69,27 +71,24 @@ class CreateSubscriptionsTables extends Migration
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
-
-            $table->timestamps();
         });
 
-        Schema::create('subscriber_consumables', function (Blueprint $table) {
+        Schema::create('subscription_consumables', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
-            $table->integer('plan_feature_id')->unsigned();
-            $table->string('subscriber_type');
-            $table->integer('subscriber_id');
+            $table->string('plan_feature_code', 100);
+            $table->integer('subscription_id')->unsigned();
             $table->integer('available')->nullable();
             $table->integer('used')->nullable();
-
-            $table->foreign('plan_feature_id')
-                ->references('id')->on('plan_features');
-
             $table->timestamps();
+
+            $table->foreign('subscription_id')
+                ->references('id')->on('subscriptions');
         });
     }
 

@@ -2,10 +2,10 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Illuminate\Foundation\Testing\WithFaker;
 use Sagitarius29\LaravelSubscriptions\Entities\Group;
+use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 
 class GroupPlanTest extends TestCase
@@ -36,7 +36,6 @@ class GroupPlanTest extends TestCase
         Plan::create(
             'Other Plan',
             'This is a description',
-            15,
             1,
             true,
             true,
@@ -78,9 +77,9 @@ class GroupPlanTest extends TestCase
         $firstGroup = new Group('first_group');
 
         $plans = [
-            factory(Plan::class)->create(),
-            factory(Plan::class)->create(),
-            factory(Plan::class)->create(),
+            factory(Plan::class)->create(['is_enabled' => true]),
+            factory(Plan::class)->create(['is_enabled' => true]),
+            factory(Plan::class)->create(['is_enabled' => false]),
         ];
 
         $firstGroup->addPlans($plans);
@@ -88,6 +87,10 @@ class GroupPlanTest extends TestCase
         $allPlans = $firstGroup->plans()->get();
 
         $this->assertCount(3, $allPlans);
+
+        $allActivePlans = $firstGroup->getEnabledPlans();
+
+        $this->assertCount(2, $allActivePlans);
     }
 
     /** @test */

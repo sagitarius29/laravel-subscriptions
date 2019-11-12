@@ -3,8 +3,8 @@
 namespace Sagitarius29\LaravelSubscriptions\Entities;
 
 use Illuminate\Database\Eloquent\Builder;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
+use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 
 class Group implements GroupContract
 {
@@ -36,7 +36,9 @@ class Group implements GroupContract
 
     public function plans(): Builder
     {
-        return $this->modelPlan::query()->byGroup($this);
+        return $this->modelPlan::query()
+            ->byGroup($this)
+            ->orderBy('sort_order');
     }
 
     public function getDefaultPlan(): ?PlanContract
@@ -52,5 +54,14 @@ class Group implements GroupContract
     public function getCode(): string
     {
         return $this->code;
+    }
+
+    public function getEnabledPlans()
+    {
+        return $this->modelPlan::query()
+            ->byGroup($this)
+            ->enabled()
+            ->orderBy('sort_order')
+            ->get();
     }
 }
