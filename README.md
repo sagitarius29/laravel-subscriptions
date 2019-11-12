@@ -70,19 +70,20 @@ class User extends Authenticable
 <?php
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
+use \Sagitarius29\LaravelSubscriptions\Entities\PlanConsumable;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanInterval;
 
 $plan = Plan::create(
         'name of plan', //name
         'this is a description', //description
-        0, // free days
         1 // sort order
     );
 $features = [
-    PlanFeature::make('listings', 50), // is consumable
-    PlanFeature::make('pictures_per_listing', 10), // is consumable
-    PlanFeature::make('listing_duration_days', 30), // is consumable
-    PlanFeature::make('listing_title_bold', true), // is not consumable
+    PlanFeature::make('listings', 50),
+    PlanFeature::make('pictures_per_listing', 10),
+    PlanFeature::make('listing_duration_days', 30),
+    PlanFeature::make('listing_title_bold', true),
+    PlanConsumable::make('number_of_contacts', 10),
 ];
 
 // adding features to plan

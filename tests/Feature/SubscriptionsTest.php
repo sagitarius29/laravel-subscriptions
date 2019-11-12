@@ -5,6 +5,7 @@ namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Tests\Entities\User;
@@ -293,5 +294,62 @@ class SubscriptionsTest extends TestCase
 
         Carbon::setTestNow(now()->addDays(1)->addSecond());
         $this->assertNotTrue($user->hasActiveSubscription());
+    }
+
+    /** @test */
+    public function a_user_has_plans_and_is_avility_for_many_features()
+    {
+        $this->app['config']->set('subscriptions.default_features.features', [
+            'is_featured_clinic' => false,
+            'has_promotion' => true,
+        ]);
+
+        $user = factory(User::class)->create();
+
+        // The user has not a plan
+        $this->assertEquals(false, $user->abilityFor('is_featured_clinic'));
+        $this->assertEquals(true, $user->abilityFor('has_promotion'));
+
+        $firstPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $firstPlan->addFeature(PlanFeature::make('is_featured_clinic', true));
+
+        $user->subscribeTo($firstPlan);
+
+        $this->assertEquals(true, $user->abilityFor('is_featured_clinic'));
+        $this->assertEquals(true, $user->abilityFor('has_promotion'));
+
+        $firstPlan->addFeature(PlanFeature::make('has_promotion', false));
+
+        $this->assertEquals(0, $user->abilityFor('has_promotion')); //TODO change to strict false
+    }
+
+    /** @test */
+    public function a_user_can_obtain_list_of_his_avilities()
+    {
+        $this->app['config']->set('subscriptions.default_features.features', [
+            'is_featured_clinic' => false,
+            'has_promotion' => true,
+            'other_feature' => 5,
+        ]);
+
+        $user = factory(User::class)->create();
+
+        $this->assertEquals([
+            'is_featured_clinic' => false,
+            'has_promotion' => true,
+            'other_feature' => 5,
+        ], $user->abilitiesList());
+
+        $firstPlan = factory(Plan::class)->create(['is_enabled' => true]);
+        $firstPlan->addFeature(PlanFeature::make('is_featured_clinic', true));
+        $firstPlan->addFeature(PlanFeature::make('has_promotion', false));
+
+        $user->subscribeTo($firstPlan);
+
+        $this->assertEquals([
+            'is_featured_clinic' => 1,
+            'has_promotion' => 0,
+            'other_feature' => 5,
+        ], $user->abilitiesList());
     }
 }

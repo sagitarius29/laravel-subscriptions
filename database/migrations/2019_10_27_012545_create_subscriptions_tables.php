@@ -71,24 +71,25 @@ class CreateSubscriptionsTables extends Migration
             $table->timestamp('start_at')->nullable();
             $table->timestamp('end_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
+            $table->timestamps();
 
             $table->foreign('plan_id')
                 ->references('id')->on('plans');
 
-            $table->timestamps();
         });
 
-        Schema::create('subscriber_consumables', function (Blueprint $table) {
+        Schema::create('subscription_consumables', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->increments('id');
             $table->string('plan_feature_code', 100);
-            $table->string('subscriber_type');
-            $table->integer('subscriber_id');
+            $table->integer('subscription_id')->unsigned();
             $table->integer('available')->nullable();
             $table->integer('used')->nullable();
-
             $table->timestamps();
+
+            $table->foreign('subscription_id')
+                ->references('id')->on('subscriptions');
         });
     }
 

@@ -11,6 +11,7 @@ use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\SubscriptionContact;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanIntervalContract;
 use Sagitarius29\LaravelSubscriptions\Exceptions\SubscriptionErrorException;
+use Sagitarius29\LaravelSubscriptions\PlanFeature;
 
 trait HasSubscriptions
 {
@@ -34,7 +35,7 @@ trait HasSubscriptions
      */
     public function subscribeToPlan(PlanContract $plan): SubscriptionContact
     {
-        if($plan->isDisabled()) {
+        if ($plan->isDisabled()) {
             throw new SubscriptionErrorException(
                 'This plan has been disabled, please subscribe to other plan.'
             );
@@ -72,16 +73,19 @@ trait HasSubscriptions
         return $subscription;
     }
 
+    public function subscriptions(): MorphMany
+    {
+        return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
+    }
+
+    /**
+     * @return SubscriptionContact|Model|null
+     */
     public function getActiveSubscription(): ?SubscriptionContact
     {
         return $this->subscriptions()
             ->current()
             ->first();
-    }
-
-    public function subscriptions(): MorphMany
-    {
-        return $this->morphMany(config('subscriptions.entities.plan_subscription'), 'subscriber');
     }
 
     private function calculateExpireDate(Carbon $start_at, PlanIntervalContract $interval)
@@ -108,7 +112,7 @@ trait HasSubscriptions
 
     public function subscribeToInterval(PlanIntervalContract $interval): SubscriptionContact
     {
-        if($interval->plan->isDisabled()) {
+        if ($interval->plan->isDisabled()) {
             throw new SubscriptionErrorException(
                 'This plan has been disabled, please subscribe to other plan.'
             );
@@ -237,11 +241,55 @@ trait HasSubscriptions
     public function unsubscribe()
     {
         $currentSubscription = $this->getActiveSubscription();
-        $currentSubscription->cancelled_at = now();
-        $currentSubscription->save();
+
+        if (isset($currentSubscription)) {
+            $currentSubscription->cancelled_at = now();
+            $currentSubscription->save();
+        }
+    }
+
+    public function abilityFor(string $featureCode)
+    {
+        if (! in_array($featureCode, config('subscriptions.default_features.features'))) {
+            throw new SubscriptionErrorException('The "'.$featureCode.'" is not available in the system.');
+        }
+
+        $defaultFeature = config('subscriptions.default_features.features.'.$featureCode);
+        $activeSubscription = $this->getActiveSubscription();
+
+        if ($activeSubscription == null) {
+            return $defaultFeature;
+        }
+
+        $feature = $activeSubscription->plan->getFeatureByCode($featureCode);
+
+        if ($feature == null) {
+            return $defaultFeature;
+        }
+
+        return $activeSubscription->plan->getFeatureByCode($featureCode)->getValue();
+    }
+
+    public function abilitiesList()
+    {
+        $loadFeatures = config('subscriptions.default_features.features');
+        $activeSubscription = $this->getActiveSubscription();
+
+        if ($activeSubscription == null) {
+            return $loadFeatures;
+        }
+
+        $features = $activeSubscription->plan->features;
+
+        $features->each(function (PlanFeature $feature) use (&$loadFeatures) {
+            $loadFeatures[$feature->getCode()] = $feature->getValue();
+        });
+
+        return $loadFeatures;
     }
 
     public function getConsumables()
     {
+
     }
 }

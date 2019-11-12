@@ -4,6 +4,7 @@ namespace Sagitarius29\LaravelSubscriptions\Traits;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
 use Sagitarius29\LaravelSubscriptions\PlanFeature;
 
 trait HasFeatures
@@ -24,6 +25,11 @@ trait HasFeatures
     public function features(): HasMany
     {
         return $this->hasMany(config('subscriptions.entities.plan_feature'));
+    }
+
+    public function getFeatureByCode($featureCode)
+    {
+        return $this->features()->whereCode($featureCode)->first();
     }
 
     public function hasFeatures(): bool

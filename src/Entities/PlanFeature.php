@@ -7,9 +7,7 @@ use Sagitarius29\LaravelSubscriptions\PlanFeature as PlanFeatureBase;
 
 class PlanFeature extends PlanFeatureBase
 {
-    protected $attributes = [
-        'is_consumable' => false
-    ];
+    protected $isConsumable = false;
 
     /**
      * @param  string  $code
@@ -20,12 +18,12 @@ class PlanFeature extends PlanFeatureBase
      */
     public static function make(
         string $code,
-        bool $isEnabled,
+        $value,
         int $sortOrder = null
     ): Model {
         $attributes = [
             'code' => $code,
-            'value' => $isEnabled,
+            'value' => $value,
             'sort_order' => $sortOrder,
         ];
 
