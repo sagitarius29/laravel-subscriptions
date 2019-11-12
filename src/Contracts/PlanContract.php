@@ -25,12 +25,6 @@ interface PlanContract
         GroupContract $group = null
     ): PlanContract;
 
-    public function features();
-
-    public function addFeature(PlanFeatureContract $feature);
-
-    public function addFeatures(array $feature);
-
     public function intervals();
 
     public function isDefault(): bool;

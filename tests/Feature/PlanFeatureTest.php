@@ -4,6 +4,7 @@ namespace Sagitarius29\LaravelSubscriptions\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Sagitarius29\LaravelSubscriptions\Entities\Plan;
+use Sagitarius29\LaravelSubscriptions\Entities\PlanConsumable;
 use Sagitarius29\LaravelSubscriptions\Tests\TestCase;
 use Sagitarius29\LaravelSubscriptions\Entities\PlanFeature;
 
@@ -16,25 +17,34 @@ class PlanFeatureTest extends TestCase
     {
         $firstFeature = PlanFeature::make(
             'foo',
-            true, // it's not consumable because it's boolean
+            true,
             1
         );
 
-        $secondFeature = PlanFeature::make(
+        $secondFeature = PlanConsumable::make(
             'bar',
-            5, // is consumable
+            5,
+            2
+        );
+
+        $thirdFeature = PlanConsumable::make(
+            'baz',
+            1, // is consumable
             2
         );
 
         $plan = factory(Plan::class)->create();
         $plan->addFeature($firstFeature);
         $plan->addFeature($secondFeature);
+        $plan->addFeature($thirdFeature);
 
         $this->assertEquals('foo', $firstFeature->getCode());
         $this->assertEquals($plan->id, $firstFeature->plan->id);
         $this->assertTrue($firstFeature->getValue());
-        $this->assertNotTrue($firstFeature->isConsumable());
+        $this->assertNotTrue($firstFeature->is_consumable);
 
-        $this->assertTrue($secondFeature->isConsumable());
+        $this->assertTrue($secondFeature->is_consumable);
+
+        $this->assertTrue($thirdFeature->is_consumable);
     }
 }

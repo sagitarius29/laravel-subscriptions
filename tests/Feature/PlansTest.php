@@ -209,7 +209,9 @@ class PlansTest extends TestCase
     {
         $this->expectException(PlanErrorException::class);
 
-        $plan = factory(Plan::class)->create();
+        $plan = factory(Plan::class)->create([
+            'is_enabled' => true
+        ]);
         $user = factory(User::class)->create();
 
         $user->subscribeToPlan($plan);

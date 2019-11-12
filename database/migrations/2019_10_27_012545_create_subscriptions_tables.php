@@ -82,14 +82,11 @@ class CreateSubscriptionsTables extends Migration
             $table->engine = 'InnoDB';
 
             $table->increments('id');
-            $table->integer('plan_feature_id')->unsigned();
+            $table->string('plan_feature_code', 100);
             $table->string('subscriber_type');
             $table->integer('subscriber_id');
             $table->integer('available')->nullable();
             $table->integer('used')->nullable();
-
-            $table->foreign('plan_feature_id')
-                ->references('id')->on('plan_features');
 
             $table->timestamps();
         });

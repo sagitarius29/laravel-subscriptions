@@ -2,11 +2,16 @@
 
 namespace Sagitarius29\LaravelSubscriptions\Traits;
 
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Sagitarius29\LaravelSubscriptions\PlanFeature;
 
 trait HasFeatures
 {
-    public function addFeature(PlanFeatureContract $feature)
+    /**
+     * @param  PlanFeature|Model  $feature
+     */
+    public function addFeature(PlanFeature $feature)
     {
         $this->features()->save($feature);
     }
@@ -16,8 +21,13 @@ trait HasFeatures
         $this->features()->saveMany($features);
     }
 
-    public function features()
+    public function features(): HasMany
     {
         return $this->hasMany(config('subscriptions.entities.plan_feature'));
+    }
+
+    public function hasFeatures(): bool
+    {
+        return $this->features()->exists();
     }
 }
