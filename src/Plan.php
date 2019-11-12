@@ -179,6 +179,7 @@ abstract class Plan extends Model implements PlanContract
         if ($this->subscriptions()->exists() > 0) {
             throw new PlanErrorException('You cannot delete this plan because this has subscriptions.');
         }
+
         return parent::delete();
     }
 
