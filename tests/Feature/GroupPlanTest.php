@@ -36,7 +36,6 @@ class GroupPlanTest extends TestCase
         Plan::create(
             'Other Plan',
             'This is a description',
-            15,
             1,
             true,
             true,

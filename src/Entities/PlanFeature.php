@@ -23,8 +23,7 @@ class PlanFeature extends Model implements PlanFeatureContract
     public static function make(
         string $code,
         $value,
-        int $sortOrder,
-        bool $isConsumable = null
+        int $sortOrder = null
     ): Model {
         $attributes = [
             'code' => $code,
@@ -36,10 +35,6 @@ class PlanFeature extends Model implements PlanFeatureContract
             $attributes['is_consumable'] = false;
         } else {
             $attributes['is_consumable'] = true;
-        }
-
-        if ($isConsumable != null) {
-            $attributes['is_consumable'] = $isConsumable;
         }
 
         return new self($attributes);

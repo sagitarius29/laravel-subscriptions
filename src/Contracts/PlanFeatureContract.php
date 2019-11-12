@@ -16,8 +16,7 @@ interface PlanFeatureContract
     public static function make(
         string $code,
         $value,
-        int $sortOrder,
-        bool $isConsumable = null
+        int $sortOrder = null
     ): Model;
 
     public function plan();

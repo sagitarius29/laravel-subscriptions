@@ -51,7 +51,7 @@ class CreateSubscriptionsTables extends Migration
             $table->integer('plan_id')->unsigned();
             $table->string('code', 100);
             $table->integer('value')->default(0);
-            $table->integer('sort_order');
+            $table->integer('sort_order')->nullable();
             $table->boolean('is_consumable')->default(0);
 
             $table->foreign('plan_id')

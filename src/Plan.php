@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Sagitarius29\LaravelSubscriptions\Contracts\PlanContract;
 use Sagitarius29\LaravelSubscriptions\Contracts\GroupContract;
-use Sagitarius29\LaravelSubscriptions\Contracts\PlanFeatureContract;
+use Sagitarius29\LaravelSubscriptions\Entities\Group;
 use Sagitarius29\LaravelSubscriptions\Exceptions\PlanErrorException;
+use Sagitarius29\LaravelSubscriptions\Traits\HasFeatures;
 
 abstract class Plan extends Model implements PlanContract
 {
+    use HasFeatures;
+
     protected $table = 'plans';
 
     protected $fillable = [
@@ -30,7 +33,6 @@ abstract class Plan extends Model implements PlanContract
     public static function create(
         string $name,
         string $description,
-        int $free_days,
         int $sort_order,
         bool $is_enabled = false,
         bool $is_default = false,
@@ -39,7 +41,6 @@ abstract class Plan extends Model implements PlanContract
         $attributes = [
             'name' => $name,
             'description' => $description,
-            'free_days' => $free_days,
             'sort_order' => $sort_order,
             'is_enabled' => $is_enabled,
             'is_default' => $is_default,
@@ -90,21 +91,6 @@ abstract class Plan extends Model implements PlanContract
     public function subscriptions()
     {
         return $this->hasMany(config('subscriptions.entities.plan_subscription'));
-    }
-
-    public function addFeature(PlanFeatureContract $feature)
-    {
-        $this->features()->save($feature);
-    }
-
-    public function addFeatures(array $features)
-    {
-        $this->features()->saveMany($features);
-    }
-
-    public function features()
-    {
-        return $this->hasMany(config('subscriptions.entities.plan_feature'));
     }
 
     public function isDefault(): bool
@@ -169,7 +155,7 @@ abstract class Plan extends Model implements PlanContract
 
     public function myGroup(): ?GroupContract
     {
-        return empty($this->group) ? null : new \Sagitarius29\LaravelSubscriptions\Entities\Group($this->group);
+        return empty($this->group) ? null : new Group($this->group);
     }
 
     public function changeToGroup(GroupContract $group): void

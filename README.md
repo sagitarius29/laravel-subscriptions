@@ -79,10 +79,10 @@ $plan = Plan::create(
         1 // sort order
     );
 $features = [
-    PlanFeature::make('listings', 50, 1),
-    PlanFeature::make('pictures_per_listing', 10, 1),
-    PlanFeature::make('listing_duration_days', 30, 1),
-    PlanFeature::make('listing_title_bold', true, 1),
+    PlanFeature::make('listings', 50), // is consumable
+    PlanFeature::make('pictures_per_listing', 10), // is consumable
+    PlanFeature::make('listing_duration_days', 30), // is consumable
+    PlanFeature::make('listing_title_bold', true), // is not consumable
 ];
 
 // adding features to plan

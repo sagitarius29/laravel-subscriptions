@@ -24,7 +24,6 @@ class PlansTest extends TestCase
         $attributes = [
             'name'          => 'Plan One',
             'description'   => $this->faker->sentence,
-            'free_days'     => 0,
             'sort_order'    => 1,
         ];
 
@@ -32,7 +31,6 @@ class PlansTest extends TestCase
         $plan = Plan::create(
             $attributes['name'],
             $attributes['description'],
-            $attributes['free_days'],
             $attributes['sort_order']
         );
 
@@ -67,9 +65,9 @@ class PlansTest extends TestCase
         );
 
         $features = [
-            PlanFeature::make('listings', 50, 1, true),
-            PlanFeature::make('pictures_per_listing', 10, 1, true),
-            PlanFeature::make('listing_duration_days', 30, 1, true),
+            PlanFeature::make('listings', 50, 1),
+            PlanFeature::make('pictures_per_listing', 10, 1),
+            PlanFeature::make('listing_duration_days', 30, 1),
             PlanFeature::make('listing_title_bold', true, 1),
         ];
 
@@ -89,7 +87,6 @@ class PlansTest extends TestCase
         $plan = Plan::create(
             'name of plan',
             'this is a description',
-            0,
             1
         );
 
@@ -146,7 +143,6 @@ class PlansTest extends TestCase
         $plan = PlanManyIntervals::create(
             'name of plan',
             'this is a description',
-            0,
             1
         );
 
@@ -175,7 +171,6 @@ class PlansTest extends TestCase
         $otherPlan = PlanManyIntervals::create(
             'other name of plan',
             'this is a description',
-            0,
             1
         );
 
