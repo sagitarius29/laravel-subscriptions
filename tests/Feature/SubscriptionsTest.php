@@ -299,10 +299,8 @@ class SubscriptionsTest extends TestCase
     /** @test */
     public function a_user_has_plans_and_is_avility_for_many_features()
     {
-        $this->app['config']->set('subscriptions.default_features.features', [
-            'is_featured_clinic' => false,
-            'has_promotion' => true,
-        ]);
+        $this->app['config']->set('subscriptions.default_features.features.is_featured_clinic', false);
+        $this->app['config']->set('subscriptions.default_features.features.has_promotion', true);
 
         $user = factory(User::class)->create();
 
