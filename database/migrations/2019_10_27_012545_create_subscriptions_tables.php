@@ -99,7 +99,7 @@ class CreateSubscriptionsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('subscriber_consumables');
+        Schema::dropIfExists('subscription_consumables');
         Schema::dropIfExists('subscriptions');
         Schema::dropIfExists('plan_features');
         Schema::dropIfExists('plan_intervals');
