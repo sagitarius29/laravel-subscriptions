@@ -252,7 +252,7 @@ trait HasSubscriptions
 
     public function abilityFor(string $featureCode)
     {
-        if (! in_array($featureCode, config('subscriptions.default_features.features'))) {
+        if (! array_key_exists($featureCode, config('subscriptions.default_features.features'))) {
             throw new SubscriptionErrorException('The "'.$featureCode.'" is not available in the system.');
         }
 
