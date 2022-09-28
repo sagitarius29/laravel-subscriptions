@@ -1,9 +1,9 @@
 {
-    "name": "sagitarius29/laravel-subscriptions",
+    "name": "beksos/laravel-subscriptions",
     "description": "A simple package for subscriptions",
     "keywords": [
         "laravel",
-        "sagitarius29",
+        "beksos",
         "laravel-subscriptions",
         "subscription",
         "intervals",
@@ -11,7 +11,7 @@
         "features",
         "recurring"
     ],
-    "homepage": "https://github.com/sagitarius29/laravel-subscriptions",
+    "homepage": "https://github.com/BechirAhmed/laravel-subscriptions",
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -32,12 +32,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Sagitarius29\\LaravelSubscriptions\\": "src"
+            "Beksos\\LaravelSubscriptions\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Sagitarius29\\LaravelSubscriptions\\Tests\\": "tests"
+            "Beksos\\LaravelSubscriptions\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -50,10 +50,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Sagitarius29\\LaravelSubscriptions\\LaravelSubscriptionsServiceProvider"
+                "Beksos\\LaravelSubscriptions\\LaravelSubscriptionsServiceProvider"
             ],
             "aliases": {
-                "LaravelSubscriptions": "Sagitarius29\\LaravelSubscriptions\\LaravelSubscriptionsFacade"
+                "LaravelSubscriptions": "Beksos\\LaravelSubscriptions\\LaravelSubscriptionsFacade"
             }
         }
     }
